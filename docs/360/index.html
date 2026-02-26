@@ -370,9 +370,9 @@
     <div class="welcome-card">
       <div class="welcome-hero">
         <div class="chip">Bienvenido</div>
-        <h1>Recorre la Sede Regional Túquerres en <span
+        <h2>Recorre la Sede Regional Túquerres en <span
             style="background:linear-gradient(135deg,var(--brand-yellow),var(--brand-green)); -webkit-background-clip:text; color:transparent">360°</span>
-        </h1>
+        </h2>
         <p>Explora bloques, pisos y aulas con puntos interactivos.</p>
         <div class="mt-3" style="display:flex;gap:8px;flex-wrap:wrap">
           <div class="chip"><i class="bi bi-mouse"></i> Hotspots</div>
@@ -381,13 +381,12 @@
         </div>
       </div>
 
-      <div class="welcome-actions">
+      
 
         <button class="btn-enter" type="button" onclick="enterTour('entrada')">
           <i class="bi bi-play-fill"></i> Entrar al tour
         </button>
-        <div class="hint">También puedes abrir “Menú” y escoger un bloque o piso.</div>
-      </div>
+        
     </div>
   </section>
 
@@ -579,16 +578,10 @@
                   </div>
                 </div>
 
-              </div><!-- /accB3 -->
-
-
-
+              </div> 
             </div>
           </div>
         </div>
-
-
-
         <button class="scene-btn mt-2" data-scene="bloque3" onclick="jumpFromMenu('bloque3')">
           <span><i class="bi bi-signpost-2"></i> Cancha (Acceso Bloque 3)</span><i class="bi bi-chevron-right"></i>
         </button>
@@ -597,11 +590,10 @@
           <span><i class="bi bi-dribbble"></i> plazoleta</span><i class="bi bi-chevron-right"></i>
         </button>
 
-      </div><!-- /navAcc -->
+      </div>
     </div>
   </div>
-
-  <!-- VIEWER + BOTTOM CONTROLS -->
+ 
   <div id="panoramaWrap">
     <div id="panorama" aria-label="Visor 360"></div>
 
@@ -1442,27 +1434,9 @@
     // Marcar estado de bienvenida al cargar para ocultar controles globales
     document.addEventListener('DOMContentLoaded', function () {
       document.body.classList.add('welcome-visible');
-    });
+    });  
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('nav')).hide();
-      if (e.altKey && e.key.toLowerCase() === 'b') goBack();
-      if (e.altKey && e.key.toLowerCase() === 'h') goHome();
-    });
-
-    /////DEPURAR 
-
-    
-    
-      // Iniciar sensores
-      initSensors();
-
-      console.log('✅ Punto rojo + Display + Incl.Y activados');
-    
-
-    // EJECUTAR
-    setTimeout(agregarInclinacionY, 500); // Espera Pannellum
-    
+      
   </script>
 </body>
 
