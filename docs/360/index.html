@@ -1451,75 +1451,13 @@
 
     /////DEPURAR 
 
-    function agregarInclinacionY() {
-      const panoramaWrap = document.getElementById('panoramaWrap') || document.getElementById('panorama');
-      if (!panoramaWrap) return console.error('No panorama encontrado');
-
-      // 1. PUNTO CENTRAL ROJO
-      let centerDot = document.getElementById('centerDot');
-      if (!centerDot) {
-        centerDot = document.createElement('div');
-        centerDot.id = 'centerDot';
-        centerDot.style.cssText = `
-      position: absolute; top: 50%; left: 50%; width: 12px; height: 12px;
-      margin: -6px 0 0 -6px; background: #ff4444; border: 3px solid #ffffff;
-      border-radius: 50%; z-index: 100; pointer-events: none; box-shadow: 0 0 12px #ff4444;
-    `;
-        panoramaWrap.appendChild(centerDot);
-      }
-
-      // 2. DISPLAY VERDE
-      let display = document.getElementById('display');
-      if (!display) {
-        display = document.createElement('div');
-        display.id = 'display';
-        display.style.cssText = `
-      position: absolute; top: 20px; left: 20px; z-index: 101;
-      background: rgba(0,150,64,0.95); color: #fff; padding: 16px;
-      border-radius: 10px; border: 2px solid #00ff88; font-family: monospace;
-      font-size: 15px; font-weight: bold; min-width: 200px; box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-    `;
-        panoramaWrap.appendChild(display);
-        display.innerHTML = `
-      <div>Escena: <span id="sceneName">-</span></div>
-      <div>"pitch": <span id="pVal">0.00</span></div>
-      <div>,"yaw": <span id="yVal">0.00</span></div>
-      <div>Incl.Y: <span id="rollVal">0.00</span></div>
-    `;
-      }
-
-      // 3. INCLINACIÓN Y REAL (DeviceOrientation)
-      let rollReal = 0;
-      const initSensors = () => {
-        if (window.DeviceOrientationEvent) {
-          window.addEventListener('deviceorientation', (e) => {
-            rollReal = Math.round((e.gamma || 0) * 100) / 100;
-            document.getElementById('rollVal').textContent = rollReal;
-          });
-        }
-      };
-
-      // 4. UPDATE COMPLETO
-      const updateAll = () => {
-        if (!viewer) return;
-        const pitch = viewer.getPitch().toFixed(2);
-        const yaw = viewer.getYaw().toFixed(2);
-        const scene = viewer.getScene() || 'n/a';
-
-        document.getElementById('pVal').textContent = pitch;
-        document.getElementById('yVal').textContent = yaw;
-        document.getElementById('sceneName').textContent = scene;
-      };
-
-      // Intervalo principal
-      if (window.orientationInt) clearInterval(window.orientationInt);
-      window.orientationInt = setInterval(updateAll, 30);
-
+    
+    
       // Iniciar sensores
       initSensors();
 
       console.log('✅ Punto rojo + Display + Incl.Y activados');
-    }
+    
 
     // EJECUTAR
     setTimeout(agregarInclinacionY, 500); // Espera Pannellum
