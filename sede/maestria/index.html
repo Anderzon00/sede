@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maestría en Educación Ambiental - Túquerres</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+  <style>
+    body {
+      background: #f9f9f9;
+      padding: 2em;
+    }
+
+    .ui.container {
+      background: #ffffff;
+      padding: 2em;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .main-title {
+      font-size: 2.5em;
+      color: #21ba45;
+      text-align: center;
+      margin-bottom: 1em;
+    }
+
+    .content-box {
+      margin-top: 2em;
+      padding: 2em;
+      border: 1px solid #ccc;
+      min-height: 200px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      font-size: 1.2em;
+      color: #333;
+    }
+
+    /* Justificación total */
+    body, .ui.container, .content-box, .content-box * {
+      text-align: justify;
+    }
+
+    /* Espacio entre listas y sus elementos */
+    .content-box ul {
+      margin-bottom: 1.5em;
+      padding-left: 1.5em;
+    }
+
+    .content-box li {
+      margin-bottom: 0.8em;
+    }
+
+    .menu-buttons {
+      display: flex;
+      justify-content: center;
+      background-color: #21ba45;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-wrap: wrap;
+    }
+
+    .menu-buttons button {
+      background-color: #21ba45;
+      color: white;
+      border: none;
+      padding: 15px 20px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background-color 0.3s;
+      flex: 1;
+    }
+
+    .menu-buttons button:hover {
+      background-color: #1e9d3c;
+    }
+
+    .ui.green.huge.button {
+      width: 100%;
+      margin-top: 2em;
+    }
+
+    img.image {
+      width: 100%;
+      height: auto;
+      margin-bottom: 1.5em;
+      border-radius: 8px;
+      object-fit: cover;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="ui container">
+    <h1 class="main-title">MAESTRÍA EN EDUCACIÓN AMBIENTAL</h1>
+    <h3 class="ui center aligned header">UNIVERSIDAD DE NARIÑO - SEDE REGIONAL TÚQUERRES</h3>
+
+    <img class="image" src="MAESTRIA.png" alt="Educación Ambiental">
+
+    <div class="menu-buttons">
+      <button onclick="showContent('convocatoria')">Convocatoria</button>
+      <button onclick="showContent('mision_vision')">Misión y Visión</button>
+      <button onclick="showContent('objetivo')">Objetivo</button>
+      <button onclick="showContent('perfiles')">Perfiles</button>
+      <button onclick="showContent('lineas')">Líneas de Investigación</button>
+      <button onclick="showContent('requisitos')">Requisitos de ingreso</button>
+      <button onclick="showContent('plan')">Plan de estudios</button>
+    </div>
+
+    <div class="content-box" id="contentBox"></div>
+
+    <a href="https://viis.udenar.edu.co/postgrados/inscripciones/" target="_blank" class="ui green huge button">
+      <i class="edit icon"></i> Ir al Proceso de Inscripción
+    </a>
+  </div>
+
+
+  
+
+  <script>
+    function showContent(section) {
+      const contentBox = document.getElementById('contentBox');
+      let content = '';
+
+      switch (section) {
+        case 'convocatoria':
+          content = `
+            <p>Inscripciones abiertas, primera cohorte de la Maestría en Educación Ambiental - Sede Regional Túquerres.</p>
+            <p><strong>Valor de inscripción:</strong> $420.800</p>
+            <p><strong>Valor de matrícula:</strong> 3 SMLV</p>
+
+            <h4>Calendario</h4>
+            <ul>
+              <li><strong>Inscripciones vía internet:</strong> del 17 de marzo al 30 de mayo de 2025</li>
+              <li><strong>Admisión (entrevista):</strong> 6 y 7 de junio</li>
+              <li><strong>Publicación de resultados:</strong> 10 de junio</li>
+              <li><strong>Inicio de clases:</strong> 1 de agosto</li>
+            </ul>
+
+            <h4>Horario</h4>
+            <ul>
+              <li>Viernes de 4:00 p.m. a 8:00 p.m.</li>
+              <li>Sábados de 8:00 a.m. a 12:00 m. y de 2:00 p.m. a 6:00 p.m.</li>
+            </ul>
+
+            <div class="ui green message"><strong>Duración:</strong> 4 semestres</div>
+
+            <h4>Requisitos de ingreso</h4>
+            <ul>
+              <li>Título de formación profesional universitario.</li>
+              <li>Copia del acta de grado.</li>
+              <li>Certificado de afiliación al sistema general de seguridad social en salud.</li>
+              <li>Propuesta de investigación correspondiente a una de las líneas de investigación (máximo cinco páginas).</li>
+              <li>Fotocopia de la cédula ampliada al 150%.</li>
+              <li>Formulario de inscripción diligenciado.</li>
+              <li>Recibo de pago.</li>
+            </ul>
+
+            <h4>Contacto</h4>
+            <p>Secretaría de la Universidad de Nariño sede regional Túquerres</p>
+            <p><strong>Celulares:</strong> 3127659453, 3137556210, 3136758105</p>
+            <p><strong>Correos:</strong> meduambiental@udenar.edu.co / tuquerres@udenar.edu.co</p>
+          `;
+          break;
+
+        case 'mision_vision':
+          content = `
+            <h3>MISIÓN</h3>
+            <p>Formar profesionales investigadores de la Educación Ambiental con visión sistémica en los aspectos natural, social y cultural, desde las perspectivas crítica y reflexiva, con fundamentos éticos y científicos para el desarrollo de las sociedades ambientalmente sostenibles en la región y en el País.</p>
+            <h3>VISIÓN</h3>
+            <p>Este programa se reconoce por la consolidación de comunidades académicas y científicas que investigan, comprenden e interpretan la Educación Ambiental en los diferentes contextos, a través de procesos participativos orientados a la transformación de las realidades ambientales y a la construcción de paz, convivencia y justicia social.</p>
+          `;
+          break;
+
+        case 'objetivo':
+          content = `
+            <h3>OBJETIVO GENERAL</h3>
+            <p>Formar profesionales críticos e investigadores de la Educación Ambiental, con fundamentos éticos y científicos para que lideren la construcción de una cultura pro ambiental que garantice el desarrollo y la sostenibilidad de los ecosistemas.</p>
+          `;
+          break;
+
+        case 'perfiles':
+          content = `
+             <h3>TÍTULO QUE OTORGA</h3>
+             <p>Magíster en Educacion Ambiental</p>
+            <h3>PERFIL PROFESIONAL</h3>
+            <p>El Magíster en Educación Ambiental se caracteriza por ser:</p>
+            <ul>
+              <li>Constructor de una cultura pro-ambiental en los contextos político, ideológico y económico para la sustentabilidad.</li>
+              <li>Educador ambiental para el desarrollo sostenible con fundamentación pedagógica y didáctica para su desempeño idóneo en el campo de la Educación Ambiental.</li>
+              <li>Gestor del desarrollo humano y de la ética en los procesos de la Educación Ambiental y la defensa de los derechos humanos para el fortalecimiento de la paz.</li>
+              <li>Crítico e investigador de la dimensión ambiental desde las ciencias básicas en el marco del componente científico, tecnológico y social.</li>
+              <li>Administrador y gestor de políticas públicas que asuman la cultura ambiental y la gestión del riesgo local, regional y global.</li>
+            </ul>
+
+            <h3>PERFIL OCUPACIONAL</h3>
+            <p>El Magíster en Educación Ambiental está en capacidad de desempeñarse como:</p>
+            <ul>
+              <li>Docente-investigador de la Educación Ambiental en los diferentes niveles de Educación Básica, Media y Superior.</li>
+              <li>Gestor y consultor en el diseño, la implementación y la evaluación de proyectos ambientales.</li>
+              <li>Diseñador y líder de proyectos ambientales escolares - PRAE, proyectos ambientales ciudadanos - PROCEDAS y proyectos ambientales universitarios - PRAUS.</li>
+              <li>Asesor de instituciones educativas y organizaciones públicas y privadas en el diseño, gestión y ejecución de proyectos ambientales.</li>
+              <li>Asesor y coordinador académico de programas de Educación Ambiental en instituciones u organizaciones públicas y privadas.</li>
+              <li>Gerente o director de entidades, de instituciones y de empresas encargadas del ambiente.</li>
+              <li>Investigador y operador de las nuevas tecnologías de la información y la comunicación para la Educación Ambiental y el desarrollo sostenible.</li>
+            </ul>
+          `;
+          break;
+
+        case 'lineas':
+          content = `
+            <h3>LÍNEAS DE INVESTIGACIÓN</h3>
+            <ul>
+              <li>Educación para la gestión y la sostenibilidad ambiental de ecosistemas estratégicos.</li>
+              <li>Pedagogía y didáctica de la Educación Ambiental.</li>
+              <li>Ciencia y TICs para la Educación Ambiental.</li>
+              <li>Cultura ambiental y desarrollo humano para el postconflicto.</li>
+            </ul>
+          `;
+          break;
+
+        case 'requisitos':
+          content = `
+            <h3>REQUISITOS DE INGRESO</h3>
+            <ul>
+              <li>Título de formación profesional universitario.</li>
+              <li>Copia del acta de grado.</li>
+              <li>Certificado de afiliación al sistema general de seguridad social en salud.</li>
+              <li>Propuesta de investigación correspondiente a una de las líneas de investigación que contenga: título, línea de investigación, problema, objetivos, justificación, metodología, bibliografía (máximo cinco páginas).</li>
+              <li>Fotocopia de la cédula ampliada al 150%.</li>
+              <li>Formulario de inscripción diligenciado.</li>
+              <li>Recibo de pago.</li>
+            </ul>
+          `;
+          break;
+
+
+          case 'plan':
+          content = `
+            <h3>PLAN DE ESTUDIOS</h3>
+            <iframe src="tabla.html" frameborder="0" style="width: 100%; height: 100vh;" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+           
+          `;
+          break;
+
+        
+        default:
+          content = 'Selecciona una sección del menú.';
+      }
+
+      contentBox.innerHTML = content;
+    }
+
+    // ✅ Mostrar la sección Convocatoria por defecto al cargar
+    showContent('convocatoria');
+  </script>
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Capturador de Coordenadas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+    <style>
+ body { margin: 0; overflow: hidden; font-family: monospace; }
+ #panorama { width: 100%; height: 100vh; position: relative; }
+ 
+ /* El punto de mira central */
+ #centerDot { position: absolute; top: 50%; left: 50%; width: 10px; height: 10px; margin: -6px 0 0 -6px; background: #ff0000; border: 2px solid #fff; border-radius: 50%; z-index: 10; pointer-events: none; }
+
+ /* Cuadro de datos flotante */
+ #display { position: absolute; top: 20px; left: 20px; z-index: 20; background: rgba(0,0,0,0.8); color: #00ff00; padding: 15px; border-radius: 5px; border: 1px solid #00ff00; font-size: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body>
+
+    <div id="display">
+ Escena: <span id="sceneName">Cargando...</span><br>
+ Pitch: <span id="pVal">0.00</span><br>
+ Yaw: <span id="yVal">0.00</span>
+    </div>
+
+    <div id="panorama">
+ <div id="centerDot"></div>
+    </div>
+
+    <script>
+ const viewer = pannellum.viewer('panorama', {
+ "default": { "firstScene": "entrada", "autoLoad": true }, "scenes": { "entrada": {  "title": "Escena de Prueba",
+  "panorama": "pasillo2_b1.jpg" // Asegúrate de que el nombre sea correcto
+ } } });
+
+ // Función de actualización forzada cada 50ms
+ setInterval(() => { if(viewer) { const pitch = viewer.getPitch().toFixed(2); const yaw = viewer.getYaw().toFixed(2);
+ const scene = viewer.getScene();
+ document.getElementById('pVal').innerText = pitch; document.getElementById('yVal').innerText = yaw; document.getElementById('sceneName').innerText = scene; }
+ }, 50);
+    </script>
+</body>
+</html>

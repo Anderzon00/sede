@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bienestar Universitario - Udenar Sede Regional Túquerres</title>
+
+  <style>
+    :root{
+      --green:#00923F;
+      --green2:#3cb371;
+      --text:#333;
+      --muted:#5d6b63;
+      --bg:#f8fcf8;
+      --card:#fff;
+      --line:#e0f2e0;
+      --line2:#c8e6c9;
+      --soft:#e8f5e9;
+      --shadow:0 8px 20px rgba(0,0,0,.06);
+      --radius:12px;
+      --max:980px;
+    }
+
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+
+    body{
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.7;
+      margin: 0;
+      padding: 20px;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    .container{
+      max-width: var(--max);
+      margin: 0 auto;
+      background: var(--card);
+      padding: 26px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      border-radius: 10px;
+    }
+
+    h1{
+      color: var(--green);
+      text-align: center;
+      margin: 0 0 14px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--green2);
+      font-size: 1.65em;
+      letter-spacing:.2px;
+    }
+
+    h3{ color: var(--green); margin: 0; }
+
+    p{ margin: 10px 0; }
+    ul{ padding-left: 22px; margin: 10px 0; }
+    li{ margin-bottom: 10px; line-height: 1.5; }
+    strong{ color: #031004; }
+
+    .section{
+      margin-bottom: 34px;
+      padding: 0;
+    }
+
+    /* Barra con tarjetas (YA NO sticky) */
+    .sticky-cards{
+      position: static;   /* clave: deja de “pegarse” */
+      top: auto;
+      z-index: auto;
+
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin: 14px 0 18px;
+    }
+
+    .sticky-cards .hint{
+      margin: 0 0 10px;
+      font-size: .95em;
+      color: var(--muted);
+    }
+
+    /* Tarjetas en una sola fila */
+    .cards-menu{
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 6px 2px 10px;
+      margin: 0;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .cards-menu::-webkit-scrollbar{ height: 10px; }
+    .cards-menu::-webkit-scrollbar-thumb{ background: #d6ead6; border-radius: 999px; }
+    .cards-menu::-webkit-scrollbar-track{ background: transparent; }
+
+    .card{
+      flex: 0 0 170px;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      text-align: center;
+      border: 1px solid var(--line);
+      scroll-snap-align: start;
+    }
+
+    .card:hover{
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+    }
+
+    .card img{
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      border-bottom: 2px solid var(--green);
+      display:block;
+      background:#f2faf2;
+    }
+
+    .card-content{ padding: 12px 10px; }
+    .card h3{ font-size: 0.98em; }
+
+    .card a{
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      height: 100%;
+    }
+
+    /* Imágenes dentro de secciones */
+    .media{
+      width:100%;
+      max-height: 330px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 14px 0;
+      display:block;
+      border: 1px solid var(--line);
+    }
+
+    .contacto-servicios{
+      background-color: var(--soft);
+      padding: 14px;
+      border-radius: 8px;
+      margin-top: 12px;
+      line-height: 1.35;
+      border: 1px solid #d8ead8;
+    }
+    .contacto-servicios h4{ margin:0 0 8px; color:#1b5e20; }
+
+    .volver-arriba{
+      display:inline-block;
+      margin-top: 12px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line2);
+      background: #fff;
+      color: var(--green);
+      text-decoration:none;
+      font-size: .95em;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .volver-arriba:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(0,0,0,.07);
+    }
+
+    /* Ya no necesitamos offset; dejamos 0 */
+    .section-target{
+      scroll-margin-top: 0px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" id="inicio">
+    <h1>BIENESTAR UNIVERSITARIO SEDE REGIONAL TÚQUERRES</h1>
+
+    <div class="section">
+      <p>
+        El Área de Bienestar Universitario de la Universidad de Nariño tiene como misión promover el desarrollo integral de toda la comunidad académica, incluyendo estudiantes, docentes y personal administrativo.
+        Este compromiso se traduce en servicios diseñados para fortalecer el bienestar físico, emocional y social de sus integrantes.
+      </p>
+
+      <p>Entre los servicios disponibles se encuentran:</p>
+      <ul>
+        <li>Área de promoción socioeconómica y ambiental</li>
+        <li>Área de cultura</li>
+        <li>Área de deportes y recreación</li>
+        <li>Área de desarrollo humano</li>
+        <li>Área de salud</li>
+      </ul>
+    </div>
+
+    <!-- Barra de tarjetas (ya NO es sticky) -->
+    <div class="sticky-cards" id="stickyNav" aria-label="Accesos rápidos">
+      <div class="cards-menu">
+        <div class="card">
+          <a href="#promocion-socioeconomica">
+            <img src="promocion.JPG" alt="Promoción Socioeconómica">
+            <div class="card-content"><h3>Promoción Socioeconómica</h3></div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="#cultura">
+            <img src="cultura.JPG" alt="Cultura">
+            <div class="card-content"><h3>Cultura</h3></div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="#deporte">
+            <img src="deportes.png" alt="Deporte y Recreación">
+            <div class="card-content"><h3>Deportes y Recreación</h3></div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="#desarrollo-humano">
+            <img src="desarrollo.JPG" alt="Desarrollo Humano">
+            <div class="card-content"><h3>Desarrollo Humano</h3></div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="#salud">
+            <img src="salud.JPG" alt="Salud">
+            <div class="card-content"><h3>Salud</h3></div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="#escuchadero">
+            <img src="escuchadero.jpg" alt="El Escuchadero">
+            <div class="card-content"><h3>El Escuchadero</h3></div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Promoción -->
+    <div id="promocion-socioeconomica" class="section section-target">
+      <h3>Promoción Socioeconómica: Becas y beneficios estudiantiles</h3>
+      <p>
+        El Área de Becas y Beneficios Estudiantiles de la Universidad de Nariño tiene como objetivo principal garantizar el acceso y la permanencia de los estudiantes en la educación superior, especialmente para aquellos en condiciones de vulnerabilidad socioeconómica.
+      </p>
+
+      <img src="promocion.JPG" alt="Promoción socioeconómica" class="media">
+
+      <p>Entre los programas disponibles se encuentran:</p>
+      <ul>
+        <li><strong>Becas de Alimentación:</strong> Apoyo a estudiantes con el servicio de una beca alimentaria durante todo el semestre académico. Esta beca incluye desayuno y almuerzo durante los días hábiles en la universidad.</li>
+        <li><strong>Auxilio de Arrendamiento:</strong> Apoyo parcial en el pago de arrendamiento.</li>
+        <li><strong>Monitorías:</strong> Actividad extracurricular que busca fortalecer la formación integral y el desempeño profesional de los estudiantes. Incluye apoyo en actividades académicas, administrativas, de investigación e interacción social.</li>
+        <li><strong>Enlace Convenio Jóvenes en Acción:</strong> Seguimiento permanente a los estudiantes beneficiarios del programa Jóvenes en Acción de la Universidad de Nariño.</li>
+      </ul>
+
+      <div class="contacto-servicios">
+        <h4>Contacto</h4>
+        <p><strong>Responsable:</strong> Psic. Nohora Aracelly Benavides Escobar</p>
+        <p><strong>Correo:</strong> bienestartuquerres@udenar.edu.co</p>
+      </div>
+
+      <a class="volver-arriba" href="#inicio">Volver arriba</a>
+    </div>
+
+    <!-- Cultura -->
+    <div id="cultura" class="section section-target">
+      <h3>Cultura</h3>
+      <p>
+        El Área de Cultura de la Universidad de Nariño promueve el bienestar integral mediante manifestaciones artísticas que preservan nuestra identidad cultural y enriquecen la formación de la comunidad universitaria.
+      </p>
+
+      <img src="cultura.JPG" alt="Actividades culturales" class="media">
+
+      <p>Entre las actividades culturales que se promueven se encuentran:</p>
+      <ul>
+        <li>Talleres de música, teatro y danza</li>
+        <li>Grupos artísticos institucionales</li>
+        <li>Muestras culturales</li>
+        <li>Taller de lectura</li>
+      </ul>
+
+      <div class="contacto-servicios">
+        <h4>Contacto</h4>
+        <p><strong>Responsable:</strong> José Damián Portilla Oliva</p>
+        <p><strong>Correo:</strong> gestionculturaltuquerres@udenar.edu.co</p>
+      </div>
+
+      <a class="volver-arriba" href="#inicio">Volver arriba</a>
+    </div>
+
+    <!-- Deporte -->
+    <div id="deporte" class="section section-target">
+      <h3>Deportes y recreación</h3>
+      <p>
+        El Área de Deporte de la Universidad de Nariño fomenta el bienestar físico de la comunidad universitaria mediante actividades deportivas, lúdicas y de esparcimiento que promueven su desarrollo integral.
+        Además, coordina la participación activa de los equipos institucionales en eventos competitivos a nivel local, regional y nacional.
+      </p>
+
+      <img src="deportes.png" alt="Deportes" class="media" style="max-height:380px;">
+
+      <p>Entre las disciplinas deportivas disponibles se encuentran:</p>
+      <ul>
+        <li>Fútbol</li>
+        <li>Baloncesto</li>
+        <li>Voleibol</li>
+        <li>Atletismo</li>
+        <li>Fútbol sala</li>
+        <li>Ajedrez</li>
+        <li>Tenis de mesa</li>
+        <li>Actividades recreativas</li>
+      </ul>
+
+      <div class="contacto-servicios">
+        <h4>Contacto</h4>
+        <p><strong>Responsable:</strong> Lic. Ronal Armando Cordoba Arteaga</p>
+        <p><strong>Correo:</strong> desarrollo.humano@udenar.edu.co</p>
+      </div>
+
+      <a class="volver-arriba" href="#inicio">Volver arriba</a>
+    </div>
+
+    <!-- Desarrollo humano -->
+    <div id="desarrollo-humano" class="section section-target">
+      <h3>Desarrollo Humano</h3>
+      <p>
+        El Área de Desarrollo Humano de la Universidad de Nariño tiene como objetivo principal fortalecer las competencias socioemocionales y el crecimiento personal de los estudiantes, docentes y personal administrativo.
+      </p>
+
+      <img src="desarrollo.JPG" alt="Desarrollo humano" class="media">
+
+      <p>Entre los programas y servicios que ofrece se encuentran:</p>
+      <ul>
+        <li><strong>Programa de Inclusión:</strong> La Universidad garantiza la asignación y seguimiento de tutorías académicas para estudiantes con discapacidad, junto con prioridad en los servicios de salud.</li>
+        <li><strong>Clima organizacional:</strong> Promoción de momentos de distensión mediante actividades lúdicas, deportivas y recreativas, las cuales contribuyen a reducir el estrés y fortalecer las relaciones interpersonales.</li>
+      </ul>
+
+      <div class="contacto-servicios">
+        <h4>Contacto</h4>
+        <p><strong>Responsable:</strong> Psic. Nohora Aracelly Benavides Escobar</p>
+        <p><strong>Correo:</strong> bienestartuquerres@udenar.edu.co</p>
+      </div>
+
+      <a class="volver-arriba" href="#inicio">Volver arriba</a>
+    </div>
+
+    <!-- Salud -->
+    <div id="salud" class="section section-target">
+      <h3>Servicios de Salud</h3>
+      <p>
+        La Universidad de Nariño, en convenio con la IPS Los Ángeles, ofrece los siguientes servicios de salud para estudiantes de la Sede Regional de Túquerres:
+      </p>
+
+      <img src="salud.JPG" alt="Servicios de salud" class="media">
+
+      <ul>
+        <li><strong>Medicina General</strong>: Consultas médicas, diagnóstico y tratamiento de enfermedades comunes.</li>
+        <li><strong>Odontología</strong>: Atención preventiva, limpiezas y tratamientos odontológicos.</li>
+        <li><strong>Psicología</strong>: Acompañamiento profesional para salud mental y bienestar emocional.</li>
+        <li><strong>Promoción y Mantenimiento de la Salud</strong>: Programas de prevención y educación en hábitos saludables.</li>
+      </ul>
+
+      <div class="contacto-servicios">
+        <h4>Contacto y horarios</h4>
+        <p><strong>Solicitud de citas:</strong> Oficina de Bienestar Universitario, Túquerres</p>
+        <p><strong>Horario de atención:</strong> Lunes a viernes de 8:00 a.m. a 5:00 p.m.</p>
+        <p><strong>Correo:</strong> bienestartuquerres@udenar.edu.co</p>
+      </div>
+
+      <a class="volver-arriba" href="#inicio">Volver arriba</a>
+    </div>
+
+    <!-- El Escuchadero -->
+    <div id="escuchadero" class="section section-target">
+      <h3>El Escuchadero</h3>
+      <p>
+        Espacio de acompañamiento y escucha para la comunidad universitaria. Aquí puedes solicitar orientación y apoyo cuando lo necesites.
+      </p>
+
+      <img src="escuchadero.jpg" alt="El Escuchadero" class="media">
+
+      <div class="contacto-servicios">
+        <h4>Contacto</h4>
+        <p><strong>Responsable:</strong> Psic. Lithsel Valeria Rey Cabrera</p>
+        <p><strong>Correo:</strong> escuchatuquerres@udenar.edu.co</p>
+      </div>
+
+      <a class="volver-arriba" href="#inicio">Volver arriba</a>
+    </div>
+
+  </div>
+
+  <!-- JS eliminado: ya no hay sticky, no se necesita calcular offset -->
+</body>
+</html>

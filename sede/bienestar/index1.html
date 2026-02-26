@@ -1,0 +1,626 @@
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bienestar Universitario - Udenar Sede Regional Túquerres</title>
+
+  <style>
+    :root{
+      --green:#00923F;
+      --green2:#3cb371;
+      --text:#333;
+      --muted:#5d6b63;
+      --bg:#f8fcf8;
+      --card:#fff;
+      --line:#e0f2e0;
+      --line2:#c8e6c9;
+      --soft:#e8f5e9;
+      --shadow:0 8px 20px rgba(0,0,0,.06);
+      --radius:12px;
+      --max:980px;
+    }
+
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+
+    body{
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.7;
+      margin: 0;
+      padding: 20px;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    .container{
+      max-width: var(--max);
+      margin: 0 auto;
+      background: var(--card);
+      padding: 26px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      border-radius: 10px;
+    }
+
+    h1{
+      color: var(--green);
+      text-align: center;
+      margin: 0 0 14px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--green2);
+      font-size: 1.65em;
+      letter-spacing:.2px;
+    }
+
+    h3{ color: var(--green); margin: 0 0 12px; }
+    p{ margin: 10px 0; }
+    ul{ padding-left: 22px; margin: 10px 0; }
+    li{ margin-bottom: 10px; line-height: 1.5; }
+    strong{ color: #031004; }
+    .section{ margin-bottom: 34px; padding: 0; }
+
+    /* Sticky nav */
+    .sticky-cards{
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin: 14px 0 18px;
+    }
+
+    .cards-menu{
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 6px 2px 10px;
+      scroll-snap-type: x mandatory;
+    }
+
+    .card{
+      flex: 0 0 170px;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      text-align: center;
+      border: 1px solid var(--line);
+      scroll-snap-align: start;
+    }
+
+    .card:hover{ 
+      transform: translateY(-3px); 
+      box-shadow: 0 8px 16px rgba(0,0,0,0.12); 
+    }
+
+    .card img{
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      border-bottom: 2px solid var(--green);
+      display:block;
+      background:#f2faf2;
+    }
+
+    .card-content{ padding: 12px 10px; }
+    .card h3{ font-size: 0.98em; }
+    .card a{ text-decoration: none; color: inherit; display: block; height: 100%; }
+
+    /* Galería */
+    .gallery-section{
+      margin: 20px 0;
+      padding: 20px;
+      background: var(--soft);
+      border-radius: var(--radius);
+      border: 1px solid var(--line2);
+      position: relative;
+    }
+
+    .gallery-title{
+      font-size: 1.1em;
+      color: var(--green);
+      margin: 0 0 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gallery-title::before{ content: "📸"; font-size: 1.2em; }
+
+    .gallery-container{
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      height: 240px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      background: white;
+    }
+
+    .gallery-track{
+      display: flex;
+      height: 100%;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      gap: 12px;
+      padding: 0 60px;
+      will-change: transform;
+    }
+
+    .gallery-item{
+      flex: 0 0 300px;
+      height: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
+      background: #f8f9fa;
+      transition: transform 0.3s ease;
+    }
+
+    .gallery-item:hover{
+      transform: scale(1.02);
+      box-shadow: 0 8px 25px rgba(0,146,63,0.2);
+    }
+
+    .gallery-item img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .gallery-nav{
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,146,63,0.95);
+      color: white;
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      transition: all 0.25s ease;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .gallery-nav:hover{
+      background: var(--green);
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 6px 20px rgba(0,146,63,0.4);
+    }
+
+    .gallery-nav.prev{ left: 10px; }
+    .gallery-nav.next{ right: 10px; }
+
+    .gallery-dots{
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 16px;
+      padding: 10px 0;
+    }
+
+    .dot{
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--line);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .dot.active{
+      background: var(--green);
+      transform: scale(1.4);
+      box-shadow: 0 0 0 3px rgba(0,146,63,0.3);
+    }
+
+    .contacto-servicios{
+      background-color: var(--soft);
+      padding: 14px;
+      border-radius: 8px;
+      margin-top: 12px;
+      line-height: 1.35;
+      border: 1px solid #d8ead8;
+    }
+
+    .contacto-servicios h4{ margin:0 0 8px; color:#1b5e20; }
+
+    .volver-arriba{
+      display:inline-block;
+      margin-top: 12px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--line2);
+      background: #fff;
+      color: var(--green);
+      text-decoration:none;
+      font-size: .95em;
+      transition: all .2s ease;
+      font-weight: 500;
+    }
+
+    .volver-arriba:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,.15);
+      background: var(--green);
+      color: white;
+    }
+
+    .section-target{ scroll-margin-top: 240px; }
+
+    @media (max-width: 768px){
+      .gallery-item{ flex: 0 0 260px; }
+      .gallery-container{ height: 200px; }
+      .gallery-nav{ width: 42px; height: 42px; font-size: 18px; }
+      .gallery-track{ padding: 0 50px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" id="inicio">
+    <h1>BIENESTAR UNIVERSITARIO SEDE REGIONAL TÚQUERRES</h1>
+
+    <div class="section">
+      <p>El Área de Bienestar Universitario de la Universidad de Nariño promueve el desarrollo integral de estudiantes, docentes y personal administrativo con servicios que fortalecen el bienestar físico, emocional y social.</p>
+      <p>Entre los servicios disponibles se encuentran:</p>
+      <ul>
+        <li>Área de promoción socioeconómica y ambiental</li>
+        <li>Área de cultura</li>
+        <li>Área de deportes y recreación</li>
+        <li>Área de desarrollo humano</li>
+        <li>Área de salud</li>
+      </ul>
+    </div>
+
+    <!-- Sticky tarjetas -->
+    <div class="sticky-cards" id="stickyNav" aria-label="Accesos rápidos">
+      <div class="cards-menu">
+        <div class="card"><a href="#promocion-socioeconomica"><img src="promocion.JPG" alt="Promoción Socioeconómica"><div class="card-content"><h3>Promoción Socioeconómica</h3></div></a></div>
+        <div class="card"><a href="#cultura"><img src="cultura.JPG" alt="Cultura"><div class="card-content"><h3>Cultura</h3></div></a></div>
+        <div class="card"><a href="#deporte"><img src="deportes.png" alt="Deporte y Recreación"><div class="card-content"><h3>Deportes y Recreación</h3></div></a></div>
+        <div class="card"><a href="#desarrollo-humano"><img src="desarrollo.JPG" alt="Desarrollo Humano"><div class="card-content"><h3>Desarrollo Humano</h3></div></a></div>
+        <div class="card"><a href="#salud"><img src="salud.JPG" alt="Salud"><div class="card-content"><h3>Salud</h3></div></a></div>
+        <div class="card"><a href="#escuchadero"><img src="escuchadero.jpg" alt="El Escuchadero"><div class="card-content"><h3>El Escuchadero</h3></div></a></div>
+      </div>
+    </div>
+
+    <!-- PROMOCIÓN SOCIOECONÓMICA -->
+    <div id="promocion-socioeconomica" class="section section-target">
+      <h3>Promoción Socioeconómica: Becas y beneficios estudiantiles</h3>
+      <p>El Área de Becas y Beneficios Estudiantiles garantiza el acceso y permanencia de estudiantes en condiciones de vulnerabilidad socioeconómica.</p>
+
+      <div class="gallery-section">
+        <h4 class="gallery-title">Galería de actividades</h4>
+        <div class="gallery-container" data-gallery="promocion">
+          <div class="gallery-track" id="promocion-track">
+            <div class="gallery-item"><img src="promocion1.jpg" alt="Becas alimentación" loading="lazy"></div>
+            <div class="gallery-item"><img src="promocion2.jpg" alt="Monitorías estudiantes" loading="lazy"></div>
+            <div class="gallery-item"><img src="promocion3.jpg" alt="Jóvenes en Acción" loading="lazy"></div>
+            <div class="gallery-item"><img src="promocion4.jpg" alt="Auxilio arrendamiento" loading="lazy"></div>
+            <div class="gallery-item"><img src="promocion5.jpg" alt="Entrega de incentivos" loading="lazy"></div>
+          </div>
+          <button class="gallery-nav prev" onclick="changeSlide('promocion', -1)">‹</button>
+          <button class="gallery-nav next" onclick="changeSlide('promocion', 1)">›</button>
+          <div class="gallery-dots" id="promocion-dots"></div>
+        </div>
+      </div>
+
+      <p>Entre los programas disponibles se encuentran:</p>
+      <ul>
+        <li><strong>Becas de Alimentación:</strong> Desayuno y almuerzo durante todo el semestre académico.</li>
+        <li><strong>Auxilio de Arrendamiento:</strong> Apoyo parcial en el pago de arrendamiento.</li>
+        <li><strong>Monitorías:</strong> Fortalecimiento académico, profesional e interacción social.</li>
+        <li><strong>Jóvenes en Acción:</strong> Seguimiento permanente a beneficiarios.</li>
+      </ul>
+
+      <div class="contacto-servicios">
+        <h4>Contacto</h4>
+        <p><strong>Responsable:</strong> Psic. Nohora Aracelly Benavides Escobar</p>
+        <p><strong>Correo:</strong> bienestartuquerres@udenar.edu.co</p>
+      </div>
+      <a class="volver-arriba" href="#inicio">↑ Volver arriba</a>
+    </div>
+
+    <!-- CULTURA -->
+    <div id="cultura" class="section section-target">
+      <h3>Cultura</h3>
+      <p>Promueve el bienestar integral mediante manifestaciones artísticas que preservan nuestra identidad cultural.</p>
+
+      <div class="gallery-section">
+        <h4 class="gallery-title">Galería cultural</h4>
+        <div class="gallery-container" data-gallery="cultura">
+          <div class="gallery-track" id="cultura-track">
+            <div class="gallery-item"><img src="cultura1.jpg" alt="Exposición fotográfica" loading="lazy"></div>
+            <div class="gallery-item"><img src="cultura2.jpg" alt="Grupo de danza" loading="lazy"></div>
+            <div class="gallery-item"><img src="cultura3.jpg" alt="Grupo de danza" loading="lazy"></div>
+            <div class="gallery-item"><img src="cultura4.jpg" alt="Foto Carnaval" loading="lazy"></div>
+            <div class="gallery-item"><img src="cultura5.jpg" alt="Taller lectura" loading="lazy"></div>
+          </div>
+          <button class="gallery-nav prev" onclick="changeSlide('cultura', -1)">‹</button>
+          <button class="gallery-nav next" onclick="changeSlide('cultura', 1)">›</button>
+          <div class="gallery-dots" id="cultura-dots"></div>
+        </div>
+      </div>
+
+      <ul>
+        <li>Talleres de música, teatro y danza</li>
+        <li>Grupos artísticos institucionales</li>
+        <li>Muestras culturales</li>
+        <li>Taller de lectura</li>
+      </ul>
+
+      <div class="contacto-servicios">
+        <h4>Contacto</h4>
+        <p><strong>Responsable:</strong> José Damián Portilla Oliva</p>
+        <p><strong>Correo:</strong> gestionculturaltuquerres@udenar.edu.co</p>
+      </div>
+      <a class="volver-arriba" href="#inicio">↑ Volver arriba</a>
+    </div>
+
+    <!-- DEPORTES -->
+    <div id="deporte" class="section section-target">
+      <h3>Deportes y recreación</h3>
+      <p>Fomenta el bienestar físico mediante actividades deportivas y coordina participación en eventos competitivos.</p>
+
+      <div class="gallery-section">
+        <h4 class="gallery-title">Galería deportiva</h4>
+        <div class="gallery-container" data-gallery="deporte">
+          <div class="gallery-track" id="deporte-track">
+            <div class="gallery-item"><img src="deportes1.jpg" alt="Voleibol" loading="lazy"></div>
+            <div class="gallery-item"><img src="deportes2.jpg" alt="Atletismo" loading="lazy"></div>
+            <div class="gallery-item"><img src="deportes3.jpg" alt="Voleibol" loading="lazy"></div>
+            <div class="gallery-item"><img src="deportes4.jpg" alt="Ajedrez" loading="lazy"></div>
+            <div class="gallery-item"><img src="deportes5.jpg" alt="Fútbol sala" loading="lazy"></div>
+          </div>
+          <button class="gallery-nav prev" onclick="changeSlide('deporte', -1)">‹</button>
+          <button class="gallery-nav next" onclick="changeSlide('deporte', 1)">›</button>
+          <div class="gallery-dots" id="deporte-dots"></div>
+        </div>
+      </div>
+
+      <ul>
+        <li>Fútbol</li>
+        <li>Baloncesto</li>
+        <li>Voleibol</li>
+        <li>Atletismo</li>
+        <li>Fútbol sala</li>
+        <li>Ajedrez</li>
+        <li>Tenis de mesa</li>
+        <li>Actividades recreativas</li>
+      </ul>
+
+      <div class="contacto-servicios">
+        <h4>Contacto</h4>
+        <p><strong>Responsable:</strong> Lic. Ronal Armando Cordoba Arteaga</p>
+        <p><strong>Correo:</strong> desarrollo.humano@udenar.edu.co</p>
+      </div>
+      <a class="volver-arriba" href="#inicio">↑ Volver arriba</a>
+    </div>
+
+    <!-- DESARROLLO HUMANO -->
+    <div id="desarrollo-humano" class="section section-target">
+      <h3>Desarrollo Humano</h3>
+      <p>Fortalece competencias socioemocionales y crecimiento personal de la comunidad universitaria.</p>
+
+      <div class="gallery-section">
+        <h4 class="gallery-title">Galería desarrollo humano</h4>
+        <div class="gallery-container" data-gallery="desarrollo">
+          <div class="gallery-track" id="desarrollo-track">
+            <div class="gallery-item"><img src="desarrollo1.jpg" alt="Programa inclusión" loading="lazy"></div>
+            <div class="gallery-item"><img src="desarrollo2.jpg" alt="Tutorías" loading="lazy"></div>
+            <div class="gallery-item"><img src="desarrollo3.jpg" alt="Clima organizacional" loading="lazy"></div>
+            <div class="gallery-item"><img src="desarrollo4.jpg" alt="Actividades lúdicas" loading="lazy"></div>
+          </div>
+          <button class="gallery-nav prev" onclick="changeSlide('desarrollo', -1)">‹</button>
+          <button class="gallery-nav next" onclick="changeSlide('desarrollo', 1)">›</button>
+          <div class="gallery-dots" id="desarrollo-dots"></div>
+        </div>
+      </div>
+
+      <ul>
+        <li><strong>Programa de Inclusión:</strong> Tutorías para estudiantes con discapacidad.</li>
+        <li><strong>Clima organizacional:</strong> Actividades lúdicas y recreativas.</li>
+      </ul>
+
+      <div class="contacto-servicios">
+        <h4>Contacto</h4>
+        <p><strong>Responsable:</strong> Psic. Nohora Aracelly Benavides Escobar</p>
+        <p><strong>Correo:</strong> bienestartuquerres@udenar.edu.co</p>
+      </div>
+      <a class="volver-arriba" href="#inicio">↑ Volver arriba</a>
+    </div>
+
+    <!-- SALUD -->
+    <div id="salud" class="section section-target">
+      <h3>Servicios de Salud</h3>
+      <p>En convenio con IPS Los Ángeles ofrece servicios médicos integrales para estudiantes.</p>
+
+      <div class="gallery-section">
+        <h4 class="gallery-title">Galería servicios salud</h4>
+        <div class="gallery-container" data-gallery="salud">
+          <div class="gallery-track" id="salud-track">
+            <div class="gallery-item"><img src="salud1.jpg" alt="Medicina general" loading="lazy"></div>
+            <div class="gallery-item"><img src="salud2.jpg" alt="Odontología" loading="lazy"></div>
+            <div class="gallery-item"><img src="salud3.jpg" alt="Psicología" loading="lazy"></div>
+            <div class="gallery-item"><img src="salud4.jpg" alt="Promoción salud" loading="lazy"></div>
+            <div class="gallery-item"><img src="salud5.jpg" alt="Campaña preventiva" loading="lazy"></div>
+          </div>
+          <button class="gallery-nav prev" onclick="changeSlide('salud', -1)">‹</button>
+          <button class="gallery-nav next" onclick="changeSlide('salud', 1)">›</button>
+          <div class="gallery-dots" id="salud-dots"></div>
+        </div>
+      </div>
+
+      <ul>
+        <li><strong>Medicina General:</strong> Consultas, diagnóstico y tratamiento.</li>
+        <li><strong>Odontología:</strong> Atención preventiva y tratamientos.</li>
+        <li><strong>Psicología:</strong> Acompañamiento para salud mental.</li>
+        <li><strong>Promoción de Salud:</strong> Programas preventivos.</li>
+      </ul>
+
+      <div class="contacto-servicios">
+        <h4>Contacto y horarios</h4>
+        <p><strong>Solicitud de citas:</strong> Oficina de Bienestar Universitario</p>
+        <p><strong>Horario:</strong> Lunes a viernes 8:00 a.m. - 5:00 p.m.</p>
+        <p><strong>Correo:</strong> bienestartuquerres@udenar.edu.co</p>
+      </div>
+      <a class="volver-arriba" href="#inicio">↑ Volver arriba</a>
+    </div>
+
+    <!-- ESCUCHADERO -->
+    <div id="escuchadero" class="section section-target">
+      <h3>El Escuchadero</h3>
+      <p>Espacio de acompañamiento y escucha para toda la comunidad universitaria.</p>
+
+      <div class="gallery-section">
+        <h4 class="gallery-title">Galería escuchadero</h4>
+        <div class="gallery-container" data-gallery="escuchadero">
+          <div class="gallery-track" id="escuchadero-track">
+            <div class="gallery-item"><img src="escuchadero1.jpg" alt="Sesión acompañamiento" loading="lazy"></div>
+            <div class="gallery-item"><img src="escuchadero2.jpg" alt="Espacio escuchadero" loading="lazy"></div>
+            <div class="gallery-item"><img src="escuchadero2.jpg" alt="Atención personalizada" loading="lazy"></div>
+           </div>
+          <button class="gallery-nav prev" onclick="changeSlide('escuchadero', -1)">‹</button>
+          <button class="gallery-nav next" onclick="changeSlide('escuchadero', 1)">›</button>
+          <div class="gallery-dots" id="escuchadero-dots"></div>
+        </div>
+      </div>
+
+      <div class="contacto-servicios">
+        <h4>Contacto</h4>
+        <p><strong>Responsable:</strong> Psic. Lithsel Valeria Rey Cabrera</p>
+        <p><strong>Correo:</strong> escuchatuquerres@udenar.edu.co</p>
+      </div>
+      <a class="volver-arriba" href="#inicio">↑ Volver arriba</a>
+    </div>
+  </div>
+
+  <script>
+    // 🎯 CÓDIGO JAVASCRIPT COMPLETO Y CORREGIDO
+    const galleries = {};
+
+    function initGallery(galleryId) {
+      const track = document.getElementById(galleryId + '-track');
+      const container = track.closest('.gallery-container');
+      const items = track.children;
+      const dotsContainer = document.getElementById(galleryId + '-dots');
+      
+      const gallery = {
+        track,
+        container,
+        items,
+        dotsContainer,
+        currentIndex: 0,
+        totalItems: items.length,
+        autoSlideInterval: null
+      };
+
+      galleries[galleryId] = gallery;
+
+      // Crear dots
+      dotsContainer.innerHTML = '';
+      for(let i = 0; i < gallery.totalItems; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'dot';
+        dot.onclick = () => goToSlide(i);
+        dotsContainer.appendChild(dot);
+      }
+      gallery.dots = dotsContainer.children;
+
+      function updateCarousel() {
+        const itemWidth = gallery.items[0].offsetWidth + 12;
+        gallery.track.style.transform = `translateX(-${gallery.currentIndex * itemWidth}px)`;
+        
+        Array.from(gallery.dots).forEach((dot, i) => {
+          dot.classList.toggle('active', i === gallery.currentIndex);
+        });
+      }
+
+      function goToSlide(index) {
+        gallery.currentIndex = Math.max(0, Math.min(index, gallery.totalItems - 1));
+        updateCarousel();
+        resetAutoSlide();
+      }
+
+      gallery.nextSlide = function() {
+        gallery.currentIndex = (gallery.currentIndex + 1) % gallery.totalItems;
+        updateCarousel();
+      };
+
+      gallery.prevSlide = function() {
+        gallery.currentIndex = (gallery.currentIndex - 1 + gallery.totalItems) % gallery.totalItems;
+        updateCarousel();
+      };
+
+      function resetAutoSlide() {
+        clearInterval(gallery.autoSlideInterval);
+        gallery.autoSlideInterval = setInterval(gallery.nextSlide, 5000);
+      }
+
+      // ✅ FUNCIÓN GLOBAL changeSlide - FUNCIONA PERFECTAMENTE
+      window.changeSlide = function(galleryId, direction) {
+        const gallery = galleries[galleryId];
+        if (!gallery) {
+          console.error('Galería no encontrada:', galleryId);
+          return;
+        }
+        
+        if (direction === 1) {
+          gallery.nextSlide();
+        } else if (direction === -1) {
+          gallery.prevSlide();
+        }
+        resetAutoSlide();
+      };
+
+      // Inicializar
+      updateCarousel();
+      resetAutoSlide();
+
+      // Touch support
+      let startX = 0;
+      container.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+      container.addEventListener('touchend', e => {
+        const endX = e.changedTouches[0].clientX;
+        if(startX - endX > 50) gallery.nextSlide();
+        if(endX - startX > 50) gallery.prevSlide();
+      });
+    }
+
+    // Inicializar TODAS las galerías
+    document.addEventListener('DOMContentLoaded', () => {
+      const galleriesList = ['promocion', 'cultura', 'deporte', 'desarrollo', 'salud', 'escuchadero'];
+      galleriesList.forEach(id => initGallery(id));
+    });
+
+    // Sticky nav offset
+    window.addEventListener('load', () => {
+      const sticky = document.getElementById('stickyNav');
+      const sections = document.querySelectorAll('.section-target');
+      function applyOffset(){
+        if(!sticky) return;
+        const h = Math.ceil(sticky.getBoundingClientRect().height) + 16;
+        sections.forEach(sec => sec.style.scrollMarginTop = h + 'px');
+      }
+      applyOffset();
+      window.addEventListener('resize', applyOffset);
+    });
+  </script>
+</body>
+</html>

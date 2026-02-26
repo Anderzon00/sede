@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Recorrido Jerárquico con Pannellum</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+    <style>
+        body, html { margin:0; height:100%; font-family:'Rubik',sans-serif; }
+
+        .menu-btn, .close-btn {
+            position:absolute; top:15px; right:20px; font-size:28px; cursor:pointer; z-index:1002;
+            color:white; background:rgba(0,0,0,0.6); padding:6px 12px; border-radius:6px;
+            transition:opacity 0.3s;
+        }
+        .menu-btn:hover, .close-btn:hover { background:rgba(0,0,0,0.8); }
+        .close-btn { display:none; }
+
+        .side-panel {
+            position:fixed; top:0; right:-280px; width:280px; height:100%;
+            background:white; box-shadow:-3px 0 8px rgba(0,0,0,0.5);
+            transition:right 0.3s ease; overflow-y:auto; z-index:1001; padding-top:60px;
+        }
+        .side-panel.active { right:0; }
+
+        .menu-links { list-style:none; margin:0; padding:0; }
+        .menu-links li {
+            padding:12px 20px; font-size:18px; border-bottom:1px solid #ddd;
+            cursor:pointer; position:relative; color:#0A2344;
+        }
+        .menu-links li:hover { background:#f0f0f0; }
+        .menu-links li::after {
+            content:"▸"; position:absolute; right:15px; transition:transform 0.3s;
+        }
+        .menu-links li.active::after { transform:rotate(90deg); }
+
+        .submenu {
+            display:none; list-style:none; padding-left:20px; background:#fafafa;
+        }
+        .submenu li { font-size:16px; padding:8px 20px; border-bottom:1px dashed #ccc; }
+        .submenu li:hover { background:#e6e6e6; }
+        .menu-links li.active > .submenu { display:block; }
+
+        #panorama { width:100%; height:500px; }
+
+        .custom-image-hotspot img {
+            width:40px; height:40px; cursor:pointer;
+            animation:pulse 2s infinite; transition:transform 0.3s ease;
+        }
+        .custom-image-hotspot img:hover { transform:scale(1.2) rotate(10deg); }
+
+        .hotspot-label {
+            position:absolute; bottom:50px; left:50%; transform:translateX(-50%);
+            color:black; font-weight:bold; font-size:14px;
+            background:rgba(255,255,255,0.7); padding:2px 6px; border-radius:4px;
+            white-space:nowrap; pointer-events:none; opacity:0;
+            animation:fadeIn 1s ease forwards;
+        }
+
+        @keyframes pulse {
+            0% { transform:scale(1); opacity:1; }
+            50% { transform:scale(1.1); opacity:0.8; }
+            100% { transform:scale(1); opacity:1; }
+        }
+        @keyframes fadeIn {
+            from { opacity:0; transform:translate(-50%,-10px); }
+            to { opacity:1; transform:translate(-50%,0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-btn">&#9776;</div>
+    <div class="close-btn">&times;</div>
+
+    <div class="side-panel" id="menuLateral">
+        <ul class="menu-links">
+            <li data-scene="edificio1">Edificio 1
+                <ul class="submenu">
+                    <li data-scene="salon1">Salón 1</li>
+                    <li data-scene="salon2">Salón 2</li>
+                    <li data-scene="salon3">Salón 3</li>
+                    <li data-scene="biblioteca">Biblioteca</li>
+                    <li data-scene="home_studio">Home Studio</li>
+                </ul>
+            </li>
+            <li data-scene="edificio2">Edificio 2
+                <ul class="submenu">
+                    <li data-scene="ed2_piso1">Piso 1</li>
+                    <li data-scene="ed2_piso2">Piso 2</li>
+                </ul>
+            </li>
+            <li data-scene="edificio3">Edificio 3
+                <ul class="submenu">
+                    <li data-scene="ed3_piso1">Piso 1</li>
+                    <li data-scene="ed3_piso2">Piso 2</li>
+                    <li data-scene="ed3_piso3">Piso 3</li>
+                    <li data-scene="ed3_piso4">Piso 4</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    
+    <div id="panorama"></div>
+
+    <script>
+        function addImageWithLabel(hotSpotDiv, args) {
+            const img = document.createElement("img");
+            img.src = args.icon || "pen.png";
+            hotSpotDiv.appendChild(img);
+            const label = document.createElement("div");
+            label.className = "hotspot-label";
+            label.innerText = args.label || "";
+            hotSpotDiv.appendChild(label);
+        }
+
+        const menuBtn = document.querySelector('.menu-btn');
+        const closeBtn = document.querySelector('.close-btn');
+        const sidePanel = document.getElementById('menuLateral');
+
+        menuBtn.addEventListener('click', () => {
+            sidePanel.classList.add('active');
+            menuBtn.style.display = 'none';
+            closeBtn.style.display = 'block';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            sidePanel.classList.remove('active');
+            closeBtn.style.display = 'none';
+            menuBtn.style.display = 'block';
+        });
+
+        document.querySelectorAll(".menu-links > li").forEach(item => {
+            item.addEventListener("click", (e) => {
+                if(e.target === item){ 
+                    const scene = item.getAttribute("data-scene");
+                    if(scene) viewer.loadScene(scene);
+                    document.querySelectorAll(".menu-links > li").forEach(li => {
+                        if(li !== item) li.classList.remove("active");
+                    });
+                    item.classList.toggle("active");
+                }
+            });
+        });
+
+        document.querySelectorAll(".submenu li").forEach(sub => {
+            sub.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const scene = sub.getAttribute("data-scene");
+                if(scene) viewer.loadScene(scene);
+            });
+        });
+
+        const viewer = pannellum.viewer('panorama', {
+            "default": { "firstScene":"entrada", "sceneFadeDuration":1000, "autoLoad":true },
+            "scenes": {
+                "entrada": {
+                    "title":"Entrada Principal", "type":"equirectangular", "panorama":"entrada.jpg",
+                    "hotSpots": [
+                        { "pitch":19.36, "yaw":-27.77, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Ir a Edificio 1",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("edificio1");} },
+                        { "pitch":0, "yaw":10, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Ir a Edificio 2",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("edificio2");} },
+                        { "pitch":-5, "yaw":40, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Ir a Edificio 3",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("edificio3");} }
+                    ]
+                },
+                "edificio1": {
+                    "title":"Edificio 1 - Entrada", "type":"equirectangular", "panorama":"bloque1.jpg",
+                    "hotSpots": [
+                        { "pitch":-20, "yaw":1, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Volver a Entrada",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("entrada");} },
+                        { "pitch":0, "yaw":-20, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Salón 1",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("salon1");} },
+                        { "pitch":0, "yaw":0, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Salón 2",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("salon2");} },
+                        { "pitch":0, "yaw":20, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Salón 3",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("salon3");} },
+                        { "pitch":-5, "yaw":40, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Biblioteca",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("biblioteca");} },
+                        { "pitch":-10, "yaw":60, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Home Studio",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("home_studio");} }
+                    ]
+                },
+                "salon1": {"title":"Salón 1","type":"equirectangular","panorama":"salon1.jpg"},
+                "salon2": {"title":"Salón 2","type":"equirectangular","panorama":"salon2.jpg"},
+                "salon3": {"title":"Salón 3","type":"equirectangular","panorama":"salon3.jpg"},
+                "biblioteca": {"title":"Biblioteca","type":"equirectangular","panorama":"biblioteca.jpg"},
+                "home_studio": {"title":"Home Studio","type":"equirectangular","panorama":"homestudio.jpg"},
+                "edificio2": {
+                    "title":"Edificio 2 - Entrada", "type":"equirectangular", "panorama":"bloque2.jpeg",
+                    "hotSpots": [
+                        { "pitch":0, "yaw":-30, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Piso 1",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("ed2_piso1");} },
+                        { "pitch":0, "yaw":20, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Piso 2",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("ed2_piso2");} }
+                    ]
+                },
+                "ed2_piso1": {
+                    "title":"Edificio 2 - Piso 1", "type":"equirectangular", "panorama":"ed2p1.jpg",
+                    "hotSpots": [
+                        { "pitch":0, "yaw":-20, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Informática 1",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("informatica1");} },
+                        { "pitch":0, "yaw":20, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Informática 2",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("informatica2");} }
+                    ]
+                },
+                "ed2_piso2": {
+                    "title":"Edificio 2 - Piso 2", "type":"equirectangular", "panorama":"ed2p2.jpg",
+                    "hotSpots": [
+                        { "pitch":0, "yaw":-20, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Salón 1",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("ed2_salon1");} },
+                        { "pitch":0, "yaw":0, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Salón 2",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("ed2_salon2");} },
+                        { "pitch":0, "yaw":20, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Regionalización",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("regionalizacion");} }
+                    ]
+                },
+                "informatica1": {"title":"Informática 1","type":"equirectangular","panorama":"info1.jpg"},
+                "informatica2": {"title":"Informática 2","type":"equirectangular","panorama":"info2.jpg"},
+                "ed2_salon1": {"title":"Salón 1","type":"equirectangular","panorama":"ed2s1.jpg"},
+                "ed2_salon2": {"title":"Salón 2","type":"equirectangular","panorama":"ed2s2.jpg"},
+                "regionalizacion": {"title":"Regionalización","type":"equirectangular","panorama":"regionalizacion.jpg"},
+                "edificio3": {
+                    "title":"Edificio 3 - Entrada", "type":"equirectangular", "panorama":"bloque3.jpg",
+                    "hotSpots": [
+                        { "pitch":0, "yaw":-30, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Piso 1",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("ed3_piso1");} },
+                        { "pitch":0, "yaw":0, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Piso 2",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("ed3_piso2");} },
+                        { "pitch":0, "yaw":30, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Piso 3",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("ed3_piso3");} },
+                        { "pitch":0, "yaw":50, "type":"custom", "cssClass":"custom-image-hotspot",
+                          "createTooltipFunc":addImageWithLabel, "createTooltipArgs":{label:"Piso 4",icon:"pen.png"},
+                          "clickHandlerFunc":function(){viewer.loadScene("ed3_piso4");} }
+                    ]
+                },
+                "ed3_piso1": {"title":"Piso 1","type":"equirectangular","panorama":"ed3p1.jpg"},
+                "ed3_piso2": {"title":"Piso 2","type":"equirectangular","panorama":"ed3p2.jpg"},
+                "ed3_piso3": {"title":"Piso 3","type":"equirectangular","panorama":"ed3p3.jpg"},
+                "ed3_piso4": {"title":"Piso 4","type":"equirectangular","panorama":"ed3p4.jpg"}
+            }
+        });
+    </script>
+</body>
+</html>

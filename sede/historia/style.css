@@ -1,0 +1,322 @@
+  :root { --primary-color:#2c8134; --circle-size:20px; }
+
+    body{
+      font-family: Arial, sans-serif;
+      background:#f9f9f9;
+      padding:40px 0;
+      text-align:center;
+      font-size:15px;
+    }
+
+    h2 { max-width:900px; margin:0 auto 20px; }
+
+    body > img{
+      display:block;
+      margin:0 auto 20px;
+      max-width:100%;
+      height:auto;
+    }
+
+    .description-container{
+      background:white;
+      border-radius:12px;
+      box-shadow:0 4px 20px rgba(0,0,0,0.08);
+      padding:20px;
+      width:80%;
+      max-width:900px;
+      margin:20px auto;
+      border:1px solid rgba(0,0,0,0.05);
+      text-align:justify;
+    }
+    .description-container h3{ text-align:center; margin:0 0 15px 0; }
+
+    /* Timeline */
+    .timeline-container{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:20px;
+      width:80%;
+      max-width:900px;
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .arrow{
+      background:white;
+      border:1px solid #ccc;
+      border-radius:50%;
+      width:35px;
+      height:35px;
+      line-height:38px;
+      cursor:pointer;
+      font-size:20px;
+      user-select:none;
+      margin:0 10px;
+      flex-shrink:0;
+    }
+    .arrow:hover{ background:#2c8134; color:white; transition:background .3s ease,color .3s ease; }
+
+    .timeline{
+      display:flex;
+      align-items:center;
+      overflow:hidden;
+      width:100%;
+      position:relative;
+      flex:1;
+    }
+
+    .timeline-line{
+      position:absolute;
+      top:29%;
+      left:0; right:0;
+      height:3px;
+      background:#ccc;
+      z-index:1;
+      transform:translateY(-50%);
+    }
+
+    .timeline-events{
+      display:flex;
+      transition:transform 0.4s ease;
+      position:relative;
+      width:max-content;
+      z-index:2;
+      padding:10px 0;
+    }
+
+    .event{
+      position:relative;
+      text-align:center;
+      min-width:150px;
+      flex-shrink:0;
+      cursor:pointer;
+    }
+
+    .circle{
+      width:var(--circle-size);
+      height:var(--circle-size);
+      background:white;
+      border:3px solid #2c8134;
+      border-radius:50%;
+      margin:0 auto 8px;
+      position:relative;
+      z-index:3;
+      transition:transform .3s ease, box-shadow .3s ease, background .2s;
+      display:inline-block;
+    }
+    .circle:hover{ transform:scale(1.1); box-shadow:0 0 0 8px rgba(0,146,63,0.08); }
+
+    .event.active .circle{ background:#00B050; border-color:#13bb5e; }
+
+    .event-title{ font-size:10px; color:#333; }
+    .event-year{ display:block; font-size:14px; font-weight:bold; color:#2c8134; }
+
+    /* Stage con 1 sola tarjeta visible */
+    .fixed-card-container{
+      height: 650px;
+      margin: 20px auto;
+      width: 80%;
+      max-width: 900px;
+      position: relative;
+    }
+
+    .card{
+      background:white;
+      border-radius:12px;
+      box-shadow:0 4px 20px rgba(0,0,0,0.08);
+      padding:20px;
+      width:100%;
+      border:1px solid rgba(0,0,0,0.05);
+      position:absolute;
+      top:0;
+      left:50%;
+      transform:translateX(-50%);
+      overflow:hidden;
+      text-align:left;
+    }
+    .card[hidden]{ display:none; }
+
+    .card-year{
+      position:absolute;
+      top:15px;
+      left:15px;
+      background:#2c8134;
+      color:white;
+      padding:0.5rem 1rem;
+      border-radius:12px;
+      font-weight:600;
+      z-index:5;
+      box-shadow:0 3px 10px rgba(0,0,0,0.12);
+    }
+
+    .card-body{
+      display:flex;
+      gap:24px;
+      align-items:stretch;
+      justify-content:space-between;
+      margin-top:8px;
+    }
+
+    .card-content{
+      flex:1 1 55%;
+      padding:10px 6px;
+      text-align:justify;
+      order:1;
+    }
+
+    .card-content h3{ margin-top:2rem; margin-bottom:0.8rem; }
+    .card-content p{
+      font-size:0.9rem;
+      color:#555;
+      line-height:1.6;
+      white-space:pre-line;
+      max-height: 430px;
+      overflow-y:auto;
+    }
+
+    /* Media */
+    .media-box{
+      flex:0 0 40%;
+      min-width:220px;
+      align-self:stretch;
+      border-radius:10px;
+      overflow:hidden;
+      position:relative;
+      box-shadow:0 6px 18px rgba(0,0,0,0.06);
+      order:2;
+      background:#fff;
+      display:flex;
+      flex-direction:column;
+      min-height: 0; /* clave para flex column */
+    }
+
+    /* VIDEOS ARRIBA */
+    .video-area{
+      padding:10px;
+      border-bottom:1px solid rgba(0,0,0,0.06);
+      background:#fff;
+    }
+    .video-area video{
+      width:100%;
+      height:220px;
+      object-fit:cover;
+      border-radius:10px;
+      background:#000;
+      display:block;
+    }
+
+    /* Carrusel de IMÁGENES abajo */
+    .image-carousel{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
+
+    /* ---- FIX PRINCIPAL: el viewport necesita altura real ---- */
+    .image-carousel .media-viewport{
+      flex:1;
+      position:relative;
+      overflow:hidden;
+      border-radius:10px;
+      background:#fff;
+
+       aspect-ratio: 4 / 3; 
+      min-height: 220px;  
+    }
+
+    .media-item{
+      position:absolute;
+      inset:0;
+      display:none;
+      width:100%;
+      height:100%;
+    }
+    .media-item.active{ display:block; }
+
+    .media-item img{
+      width:100%;
+      height:100%;
+      object-fit: clamp(0.8, 1, 1.1);
+      object-position: center;
+      display:block;
+    }
+
+    .media-controls{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:10px;
+      border-top:1px solid rgba(0,0,0,0.06);
+      background:#fff;
+    }
+
+    .media-controls .left,
+    .media-controls .right{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    .btn{
+      border:1px solid #ccc;
+      background:#fff;
+      border-radius:10px;
+      padding:8px 10px;
+      cursor:pointer;
+      font-size:13px;
+      user-select:none;
+    }
+    .btn:hover{
+      border-color:#2c8134;
+      color:#2c8134;
+    }
+
+    .counter{
+      font-size:12px;
+      color:#2c8134;
+      font-weight:bold;
+      min-width:64px;
+      text-align:center;
+    }
+
+    /* Coordinadores */
+    .coordinators-container{
+      margin-top:30px;
+      width:80%;
+      max-width:900px;
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .coordinators-list{
+      list-style:none;
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:30px;
+      padding-left:0;
+      margin-top:12px;
+    }
+
+    .coordinator-item{ width:150px; text-align:center; }
+    .coordinator-image{
+      width:120px; height:120px;
+      border-radius:50%;
+      object-fit:cover;
+      border:4px solid #2c8134;
+    }
+    .coordinator-name{ font-weight:bold; margin:10px 0 5px; font-size:14px; }
+    .coordinator-year{ color:#2c8134; font-size:12px; }
+
+    @media (max-width:768px){
+      body{ padding:20px 0; }
+      .description-container, .timeline-container, .fixed-card-container, .coordinators-container{ width:95%; }
+      .card-body{ flex-direction:column; }
+      .fixed-card-container{ height: 720px; }
+      .media-box{ min-width:unset; }
+      .card-content p{ max-height: 260px; }
+      .video-area video{ height:180px; }
+    }

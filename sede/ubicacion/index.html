@@ -1,0 +1,129 @@
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ubicación – Sede Regional Túquerres</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    *{ box-sizing:border-box; }
+
+    :root{
+      --gutter: clamp(16px, 4vw, 24px);
+      --radius: 12px;
+      --border: 1px solid #e6e6e6;
+      --green: #00923F;
+    }
+
+    body{
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      line-height: 1.4;
+      color: #1a1a1a;
+      background: #fdfdfd;
+    }
+
+    .udenar-container{
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 16px var(--gutter);
+      width: 100%;
+    }
+
+    .udenar-card{
+      border: var(--border);
+      border-radius: var(--radius);
+      overflow: hidden; 
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    } 
+
+    .udenar-card__header{
+      background: var(--green);
+      color: #fff;
+      padding: 18px var(--gutter);
+    }
+
+    .udenar-card__title{
+      margin: 0;
+      font-size: clamp(18px, 4.6vw, 24px);
+      font-weight: bold;
+    }
+
+    .udenar-card__body{
+      padding: 16px var(--gutter);
+    }
+
+    /* Contenedor del mapa */
+    #map-leaflet {
+      width: 100%;
+      height: 450px;
+      border-radius: 8px;
+      background: #f2f2f2;
+      border: var(--border);
+      z-index: 1;
+    }
+
+    /* Estilo para el texto dentro del popup */
+    .leaflet-popup-content b {
+      color: var(--green);
+    }
+
+    @media (max-width: 480px){
+      #map-leaflet { height: 320px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="udenar-container">
+    <section class="udenar-card">
+      <div class="udenar-card__header">
+        <h2 class="udenar-card__title">Ubicación – Sede Regional Túquerres</h2>
+      </div>
+
+      <div class="udenar-card__body">
+        <p style="margin-bottom: 15px;">
+          <strong>Dirección:</strong> Calle 24 No. 13B – 62, Barrio La Reconstrucción, Túquerres
+        </p>
+
+        <div id="map-leaflet"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // 1. Coordenadas Sede Túquerres
+    const lat = 1.083059774057794; 
+    const lng = -77.61664330959321;
+
+    // 2. Configurar el Icono Verde de Escuela
+    const escuelaVerdeIcon = L.icon({
+        // URL de un icono de escuela verde similar al de Flaticon
+        iconUrl: 'school.png', 
+        iconSize: [45, 45], // Tamaño un poco más grande para resaltar
+        iconAnchor: [22, 45], // Ajuste del punto de apoyo
+        popupAnchor: [0, -45] // Ajuste del globo de información
+    });
+
+    // 3. Inicializar el mapa
+    const map = L.map('map-leaflet').setView([lat, lng], 22);
+
+    // Capa de mapa (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    // 4. Añadir marcador con el nuevo icono
+    const marker = L.marker([lat, lng], { icon: escuelaVerdeIcon }).addTo(map);
+    
+    // 5. Vincular el nombre de la institución
+    marker.bindPopup("<b>Sede Regional Túquerres</b><br>Universidad de Nariño")
+          .openPopup();
+  </script>
+</body>
+</html>
