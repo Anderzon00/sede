@@ -1,4 +1,4 @@
-  <!doctype html>
+<!doctype html>
 <html lang="es">
 
 <head>
@@ -16,6 +16,7 @@
     :root {
       --brand-green: #009640;
       --brand-yellow: #ffc933;
+      bg: radial-gradient(circle at top left, #fffbe6, #f5fff9);
       --surface: #ffffff;
       --muted: #4b5563;
       --text: #111827;
@@ -35,7 +36,7 @@
       color: var(--text);
     }
 
-    /* NAV / TOPBAR */
+    /* NAV / TOPBAR styled like nuevo but keeping same IDs for scripts */
     .topbar {
       position: fixed;
       inset: 0 0 auto 0;
@@ -80,7 +81,7 @@
       box-shadow: 0 8px 18px rgba(0, 0, 0, .12)
     }
 
-    /* Menu icon */
+    /* Menu icon (uses btnMenu id to open offcanvas) */
     #btnMenu {
       width: 44px;
       height: 44px;
@@ -112,9 +113,10 @@
       height: 100%;
       background-image: url('bg.png');
       background-size: cover;
+      ;
     }
 
-    /* Pantalla de bienvenida - ADAPTADA A MÓVILES */
+    /* Welcome (hero) — redesigned like nuevo but keep id welcome and enter button behavior */
     #welcome {
       position: fixed;
       inset: var(--topbar-h) 0 0 0;
@@ -127,29 +129,32 @@
 
     .welcome-card {
       width: min(420px, 95vw);
-      height: auto;                /* altura automática */
-      min-height: 360px;           /* opcional para mantener proporción */
+      /* ← Cuadrada 420px max */
+      height: 420px;
+      /* ← Altura fija = cuadrada */
+      max-width: none;
+      /* ← Quita max-width ancho */
       border-radius: 24px;
+      /* ← Redondeo más suave */
       background: rgba(255, 255, 255, 0.98);
       padding: 32px;
       box-shadow: 0 32px 80px rgba(0, 0, 0, 0.15);
+      /* ← Sombra más moderna */
+      position: relative;
+      overflow: hidden;
       display: flex;
+      /* ← Flex en lugar de grid */
       flex-direction: column;
+      /* ← Vertical */
       gap: 24px;
       align-items: center;
       justify-content: center;
       text-align: center;
+      /* ← Centrado texto */
     }
 
-    /* Ajustes para móviles pequeños */
-    @media (max-width: 480px) {
-      .welcome-card {
-        padding: 24px 16px;
-        gap: 16px;
-      }
-      .welcome-hero h2 {
-        font-size: 1.4rem;
-      }
+    .welcome-hero {
+      position: relative;
     }
 
     .chip {
@@ -176,6 +181,14 @@
       font-weight: 600;
     }
 
+    .welcome-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 6px 4px;
+    }
+
     .btn-enter {
       border-radius: 999px;
       padding: 12px 14px;
@@ -197,7 +210,7 @@
       font-size: .9rem;
     }
 
-    /* Offcanvas (menú) */
+    /* Offcanvas (nav) styled to match nuevo menu look but keep id nav used by scripts */
     .offcanvas {
       background: var(--surface) !important;
       color: var(--text);
@@ -211,20 +224,18 @@
       background: transparent;
     }
 
-    /* Botones del menú con área táctil mejorada */
     .scene-btn {
       display: flex;
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      padding: 12px 16px;         /* más grande para facilitar toque */
+      padding: 10px 12px;
       border-radius: 12px;
       border: 1px solid rgba(0, 0, 0, .04);
       background: transparent;
       font-weight: 700;
       color: var(--text);
       margin-bottom: 8px;
-      font-size: 1rem;
     }
 
     .scene-btn.active {
@@ -232,7 +243,7 @@
       background: linear-gradient(90deg, rgba(255, 250, 230, .6), rgba(255, 255, 255, .6));
     }
 
-    /* Controles inferiores */
+    /* Bottom controls */
     #bottomControls {
       position: absolute;
       left: 0;
@@ -249,12 +260,11 @@
       align-items: center;
       gap: 10px;
       border-radius: 999px;
-      padding: 12px 18px;         /* más grande para móviles */
+      padding: 10px 14px;
       font-weight: 900;
       border: 1px solid rgba(0, 0, 0, .06);
       margin: 0 6px;
       background: rgba(255, 255, 255, .95);
-      font-size: 1rem;
     }
 
     #btnBackBottom {
@@ -262,7 +272,10 @@
       color: #111827;
     }
 
-    /* Hotspots */
+    /* Hotspot custom tweaks from original */
+
+
+
     .custom-image-hotspot img {
       width: 50px;
       height: 50px;
@@ -274,20 +287,30 @@
     }
 
     @keyframes imageBlink {
-      0%, 70% {
+
+      0%,
+      70% {
+
         transform: scale(1);
         filter: drop-shadow(0 0 0 rgba(255, 201, 51, .6));
       }
+
       80% {
+
         transform: scale(1.05);
         filter: drop-shadow(0 0 1px rgba(255, 201, 51, .9));
       }
+
       100% {
         opacity: 1;
         transform: scale(1);
         filter: drop-shadow(0 0 1px rgba(255, 201, 51, .85));
       }
     }
+
+
+
+
 
     .hotspot-label {
       opacity: 0;
@@ -299,40 +322,24 @@
       font-weight: 800;
       font-size: .78rem;
       white-space: nowrap;
-      transition: opacity 0.2s;
     }
 
     .custom-image-hotspot:hover .hotspot-label {
       opacity: 1;
+      transform: translateY(0);
     }
 
-    /* En móviles, las etiquetas siempre visibles y con mejor contraste */
-    @media (max-width: 768px) {
-      .hotspot-label {
-        opacity: 1;
-        background: rgba(0, 0, 0, 0.7);
-        color: white;
-        font-size: 0.2rem;
-        padding: 2px 4px;
-        white-space: normal;
-        max-width: 120px;
-        text-align: center;
-      }
-    }
 
-    /* Ajuste altura topbar en móviles */
-    @media (max-width: 600px) {
-      .topbar {
-        height: 56px;
-        padding: 0.4rem 0.8rem;
+
+    @media (max-width:900px) {
+      .welcome-card {
+        grid-template-columns: 1fr;
+        padding: 18px;
       }
-      #panoramaWrap {
-        margin-top: 56px;
-        height: calc(100vh - 56px);
-      }
+
       #btnMenu {
         width: 40px;
-        height: 40px;
+        height: 40px
       }
     }
 
@@ -343,12 +350,13 @@
 </head>
 
 <body>
-  <!-- TOPBAR -->
+  <!-- TOPBAR (visuals borrowed from nuevo; uses #btnMenu to open offcanvas) -->
   <header class="topbar">
     <div class="brand">
       <div class="brand-badge">T</div>
       <div>Tour Interactivo — Udenar Túquerres</div>
     </div>
+
     <div style="display:flex;align-items:center;gap:10px">
       <button id="btnMenu" class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#nav"
         aria-controls="nav">
@@ -357,7 +365,7 @@
     </div>
   </header>
 
-  <!-- WELCOME (pantalla de bienvenida) -->
+  <!-- WELCOME (hero) -->
   <section id="welcome" aria-label="Pantalla de bienvenida">
     <div class="welcome-card">
       <div class="welcome-hero">
@@ -372,13 +380,17 @@
           <div class="chip"><i class="bi bi-arrow-left"></i> Volver</div>
         </div>
       </div>
-      <button class="btn-enter" type="button" onclick="enterTour('entrada')">
-        <i class="bi bi-play-fill"></i> Entrar al tour
-      </button>
+
+      
+
+        <button class="btn-enter" type="button" onclick="enterTour('entrada')">
+          <i class="bi bi-play-fill"></i> Entrar al tour
+        </button>
+        
     </div>
   </section>
 
-  <!-- OFFCANVAS NAV (menú) -->
+  <!-- OFFCANVAS NAV (structure preserved from index_mejorado; visually restyled) -->
   <div class="offcanvas offcanvas-end" tabindex="-1" id="nav" aria-labelledby="navLabel">
     <div class="offcanvas-header">
       <div>
@@ -389,6 +401,7 @@
       </div>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
     </div>
+
     <div class="offcanvas-body">
       <div class="mb-2">
         <button class="scene-btn w-100" data-scene="entrada" onclick="jumpFromMenu('entrada')">
@@ -396,7 +409,13 @@
           <i class="bi bi-chevron-right"></i>
         </button>
       </div>
+
       <div class="accordion" id="navAcc">
+
+
+
+
+        <!-- Reuse the accordion contents from index_mejorado to preserve functionality -->
         <!-- Bloque 1 -->
         <div class="accordion-item mb-2">
           <h2 class="accordion-header" id="hB1">
@@ -440,8 +459,7 @@
                 </h2>
                 <div id="cB2p1" class="accordion-collapse collapse" data-bs-parent="#accB2">
                   <div class="accordion-body">
-                    <!-- CORREGIDO: data-scene ahora coincide con la escena real "b2_pasillo" -->
-                    <button class="scene-btn" data-scene="b2_pasillo" onclick="jumpFromMenu('b2_pasillo')">
+                    <button class="scene-btn" data-scene="bloque2" onclick="jumpFromMenu('b2_pasillo')">
                       <span><i class="bi bi-signpost-2"></i> Pasillo / Entrada</span><i class="bi bi-chevron-right"></i>
                     </button>
                     <button class="scene-btn" data-scene="e2_p1_info1" onclick="jumpFromMenu('e2_p1_info1')">
@@ -452,6 +470,7 @@
                     </button>
                   </div>
                 </div>
+
                 <div class="accordion-item">
                   <h2 class="accordion-header" id="hB2p2">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -467,25 +486,117 @@
                     </div>
                   </div>
                 </div>
-              </div>
+
+              </div><!-- /accB2 -->
             </div>
           </div>
         </div>
 
-        <!-- Bloque 3 (similar, pero omito por brevedad; en tu código ya está corregido) -->
-        <!-- ... (se mantiene igual que en tu versión mejorada) ... -->
+        <!-- Bloque 3 -->
+        <div class="accordion-item mb-2">
+          <h2 class="accordion-header" id="hB3">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cB3">
+              <i class="bi bi-building me-2"></i> Bloque 3
+            </button>
+          </h2>
+          <div id="cB3" class="accordion-collapse collapse" data-bs-parent="#navAcc">
+            <div class="accordion-body">
+              <div class="accordion" id="accB3">
+                <div class="accordion-item mb-2">
+                  <h2 class="accordion-header" id="hB3p1">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#cB3p1">
+                      <i class="bi bi-layers me-2"></i> Piso 1 ( Auditorio / Cafetería)
+                    </button>
+                  </h2>
+                  <div id="cB3p1" class="accordion-collapse collapse" data-bs-parent="#accB3">
+                    <div class="accordion-body">
+                      <button class="scene-btn" data-scene="e3_auditorio" onclick="jumpFromMenu('e3_auditorio')">
+                        <span><i class="bi bi-mic"></i> Auditorio</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                      <button class="scene-btn" data-scene="e3_p1" onclick="jumpFromMenu('e3_p1')">
+                        <span><i class="bi bi-cup-hot"></i> Cafetería</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item mb-2">
+                  <h2 class="accordion-header" id="hB3p2">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#cB3p2">
+                      <i class="bi bi-layers me-2"></i> Piso 2 (Area administrativa, Bienestar, Centro de Idiomas)
+                    </button>
+                  </h2>
+                  <div id="cB3p2" class="accordion-collapse collapse" data-bs-parent="#accB3">
+                    <div class="accordion-body">
+                      <button class="scene-btn" data-scene="e3_p2" onclick="jumpFromMenu('e3_p2')">
+                        <span><i class="bi bi-layers"></i> Pasillo</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item mb-2">
+                  <h2 class="accordion-header" id="hB3p3">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#cB3p3">
+                      <i class="bi bi-layers me-2"></i> Piso 3 (Aulas)
+                    </button>
+                  </h2>
+                  <div id="cB3p3" class="accordion-collapse collapse" data-bs-parent="#accB3">
+                    <div class="accordion-body">
+                      <button class="scene-btn" data-scene="e3_p3" onclick="jumpFromMenu('e3_p3')">
+                        <span><i class="bi bi-layers"></i> Pasillo</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="hB3p4">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#cB3p4">
+                      <i class="bi bi-layers me-2"></i> Piso 4 (Laboratorios)
+                    </button>
+                  </h2>
+                  <div id="cB3p4" class="accordion-collapse collapse" data-bs-parent="#accB3">
+                    <div class="accordion-body">
+                      <button class="scene-btn" data-scene="e3_p4" onclick="jumpFromMenu('e3_p4')">
+                        <span><i class="bi bi-beaker"></i> Pasillo</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                      <button class="scene-btn" data-scene="e3_p4_lab1" onclick="jumpFromMenu('e3_p4_lab1')">
+                        <span><i class="bi bi-beaker"></i> Lab 1</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                      <button class="scene-btn" data-scene="e3_p4_lab2" onclick="jumpFromMenu('e3_p4_lab2')">
+                        <span><i class="bi bi-beaker"></i> Lab 2</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                      <button class="scene-btn" data-scene="e3_p4_lab3" onclick="jumpFromMenu('e3_p4_lab3')">
+                        <span><i class="bi bi-beaker"></i> Lab 3</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div> 
+            </div>
+          </div>
+        </div>
         <button class="scene-btn mt-2" data-scene="bloque3" onclick="jumpFromMenu('bloque3')">
           <span><i class="bi bi-signpost-2"></i> Cancha (Acceso Bloque 3)</span><i class="bi bi-chevron-right"></i>
         </button>
+
         <button class="scene-btn" data-scene="plazoleta" onclick="jumpFromMenu('plazoleta')">
           <span><i class="bi bi-dribbble"></i> plazoleta</span><i class="bi bi-chevron-right"></i>
         </button>
+
       </div>
     </div>
   </div>
-
+ 
   <div id="panoramaWrap">
     <div id="panorama" aria-label="Visor 360"></div>
+
     <div id="bottomControls">
       <button id="btnHomeBottom" class="ctrl-btn" type="button" onclick="goHome()" disabled>
         <i class="bi bi-house-door"></i> Inicio
@@ -501,6 +612,7 @@
   <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 
   <script>
+    // Mantengo las mismas funciones/logic del index_mejorado (solo cambié la interfaz)
     function addImageWithLabel(hotSpotDiv, args) {
       hotSpotDiv.classList.add('custom-image-hotspot');
       const img = document.createElement('img');
@@ -524,8 +636,10 @@
 
       if (homeBtn) {
         homeBtn.disabled = !tourStarted;
+        // CAMBIO AQUÍ: esconder completamente en inicio del tour
         homeBtn.style.display = (tourStarted && historyStack.length > 1) ? 'inline-flex' : 'none';
       }
+
       if (backBtn) {
         const hasHistory = historyStack.length > 1;
         backBtn.disabled = !hasHistory;
@@ -566,6 +680,7 @@
 
     function goBack() {
       if (historyStack.length <= 1) {
+        // No history: ir al inicio en lugar de no hacer nada
         goHome();
         return;
       }
@@ -587,15 +702,19 @@
       let current = null;
       try { if (viewer && typeof viewer.getScene === 'function') current = viewer.getScene(); } catch (e) { }
 
+      // Si no se ha iniciado el tour o estamos en la primera escena, mostrar la pantalla de bienvenida
       if (!tourStarted || current === firstScene || historyStack.length <= 1) {
         const w = document.getElementById('welcome');
         if (w) w.style.display = 'grid';
         document.body.classList.add('welcome-visible');
+        // reset estado de tour
         tourStarted = false;
         historyStack.length = 0;
         updateBottomButtons();
         return;
       }
+
+      // En otros casos, volver a la escena de entrada
       load('entrada');
     }
 
@@ -608,6 +727,7 @@
 
     function jumpFromMenu(sceneId) {
       bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('nav')).hide();
+      // Guardar la escena actual en el historial antes de navegar, para que "Volver" tenga algo a qué regresar
       try {
         if (viewer && typeof viewer.getScene === 'function') {
           const current = viewer.getScene();
@@ -618,12 +738,14 @@
             }
           }
         }
-      } catch (e) { /* ignore */ }
+      } catch (e) {
+        // ignore
+      }
       load(sceneId);
     }
 
-
-      const config = {
+    // CONFIG (copiado de index_mejorado)
+    const config = {
       default: {
         firstScene: "entrada",
         autoLoad: false,
@@ -725,7 +847,7 @@
               "text": "Home Studio Udenar Túquerres: Producción musical, audio y grabación.",
              },
 
-     {
+ {
               "pitch": -20, "yaw": 160, "type": "custom", "cssClass": "custom-image-hotspot",
               "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Haz clic para ver el canal de YouTube.", "icon": "icoyoutube.png" },
  
@@ -778,9 +900,9 @@
 
 
 
-      "b1_pasillo2": {
+ "b1_pasillo2": {
 
-      "pitch": -8,
+   "pitch": -8,
           "yaw": 103,          "hfov": 120,
           "title": "B1: Pasillo 2", "panorama": "bloque1_pasillo2.jpg",
           "hotSpots": [
@@ -853,7 +975,7 @@
               "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
               "clickHandlerFunc": () => load("b2_pasillo")
             },
-            {
+ {
               "pitch": -19, "yaw": 86, "type": "custom", "cssClass": "custom-image-hotspot",
               "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
               "clickHandlerFunc": () => load("bloque3")
@@ -914,7 +1036,7 @@
               "clickHandlerFunc": () => load("e2_p1_info1")
             },
 
-     {
+ {
               "pitch": -19, "yaw":-80,
               "type": "custom", "cssClass": "custom-image-hotspot",
               "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
@@ -1011,7 +1133,7 @@
         },
 
 
-     "plazoleta2": {
+  "plazoleta2": {
           "title": "Plazoleta", "panorama": "plazoleta2.jpg",
 
           "hotSpots": [
@@ -1115,7 +1237,7 @@
               "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "avanzar", "icon": "arrow1.png" },
               "clickHandlerFunc": function () { load("b2_pasillo") }
             },
-     {
+    {
               "pitch": 7.45, "yaw": -159.65, "type": "custom", "cssClass": "custom-image-hotspot",
               "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Cafeteria", "icon": "icocafe.png" },
                
@@ -1159,7 +1281,7 @@
 
           ]
         },
-       "e3_rampa_acceso": {
+ "e3_rampa_acceso": {
           "title": "Bloque 3: Rampa", "panorama": "rampa.jpg", "hotSpots": [
 
             {
@@ -1214,7 +1336,7 @@
               "clickHandlerFunc": () => load("e3_p3") 
             },
 
-         {
+ {
               "pitch": -10, "yaw": -14, "type": "custom", "cssClass": "custom-image-hotspot",
               "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Bajar al piso 1 ", "icon": "icobajar.png" },
               "clickHandlerFunc": function () { load("e3_p1") }
@@ -1299,7 +1421,7 @@
               "clickHandlerFunc": () => load("e3_p4_lab3")
             },
 
-        {
+{
               "pitch": -5, "yaw": -121, "type": "custom", "cssClass": "custom-image-hotspot",
               "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Bajar al Piso 3", "icon": "icobajar.png" },
               "clickHandlerFunc": () => load("e3_p3")
@@ -1314,13 +1436,15 @@
       }
     };
 
-
     viewer = pannellum.viewer('panorama', config);
     updateBottomButtons();
 
+    // Marcar estado de bienvenida al cargar para ocultar controles globales
     document.addEventListener('DOMContentLoaded', function () {
       document.body.classList.add('welcome-visible');
-    });
+    });  
+
+      
   </script>
 </body>
 
