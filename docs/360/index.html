@@ -35,28 +35,9 @@
       color: var(--text);
     }
 
-   .btn-fullscreen-top {
-  background: transparent;
-  border: none;
-  color: var(--brand-green);
-  font-size: 1.5rem;
-  margin-right: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-.btn-fullscreen-top:hover {
-  background: rgba(0,0,0,0.05);
-}
-/* Ocultar en bienvenida */
-body.welcome-visible #btnFullscreenTop {
-  display: none !important;
-}
-
+   
+ 
+ 
     /* NAV / TOPBAR */
     .topbar {
       position: fixed;
@@ -354,11 +335,7 @@ body.welcome-visible #btnFullscreenTop {
         padding: 0.4rem 0.8rem;
       }
 
-      @media (max-width: 768px) {
-  #btnFullscreenTop {
-    display: none !important;
-  }
-}
+   
 
 
 
@@ -388,9 +365,7 @@ body.welcome-visible #btnFullscreenTop {
       <div>Tour Interactivo — Udenar Túquerres</div>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
-       <button id="btnFullscreenTop" class="btn-fullscreen-top" type="button" onclick="toggleFullscreen()">
-  <i class="bi bi-arrows-fullscreen"></i>
-</button>
+        
       <button id="btnMenu" class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#nav"
         aria-controls="nav">
         <i class="bi bi-list"></i>
@@ -667,11 +642,7 @@ body.welcome-visible #btnFullscreenTop {
     }
 
 
-    function toggleFullscreen() {
-  if (viewer) {
-    viewer.toggleFullscreen();
-  }
-}
+ 
 
 
       const config = {
@@ -1373,12 +1344,31 @@ body.welcome-visible #btnFullscreenTop {
     };
 
 
+
+    
     viewer = pannellum.viewer('panorama', config);
     updateBottomButtons();
 
     document.addEventListener('DOMContentLoaded', function () {
       document.body.classList.add('welcome-visible');
     });
+
+ 
+
+// Navegación con Alt + H (home) y Alt + B (back)
+document.addEventListener('keydown', function(e) {
+  if (e.altKey && e.key === 'h') {
+    e.preventDefault();
+    if (typeof goHome === 'function') goHome();
+  } else if (e.altKey && e.key === 'b') {
+    e.preventDefault();
+    if (typeof goBack === 'function') goBack();
+  }
+});
+
+// Mensaje al activar pantalla completa
+ 
+    
   </script>
 </body>
 
