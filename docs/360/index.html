@@ -265,6 +265,11 @@ body.welcome-visible #btnFullscreenTop {
       pointer-events: none;
     }
 
+
+    #bottomControls {
+  bottom: max(14px, env(safe-area-inset-bottom) + 40px);
+}
+
     .ctrl-btn {
       pointer-events: auto;
       display: inline-flex;
@@ -348,6 +353,15 @@ body.welcome-visible #btnFullscreenTop {
         height: 56px;
         padding: 0.4rem 0.8rem;
       }
+
+      @media (max-width: 768px) {
+  #btnFullscreenTop {
+    display: none !important;
+  }
+}
+
+
+
       #panoramaWrap {
         margin-top: 56px;
         height: calc(100vh - 56px);
