@@ -2,464 +2,303 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Visor con Barra Vertical - Línea Verde Sin Punto</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Organigrama Interactivo - Pantalla completa</title>
     <style>
-        /* Ocultar scrollbars en todos los navegadores */
         * {
-            -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        body {
-            background-color: #f8f9fa;
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-        body::-webkit-scrollbar {
-            display: none;
-        }
-        body {
-            scrollbar-width: none;
-        }
-
-        /* Miniatura inicial */
-        .preview-container {
-            width: 60%;
-            max-width: 800px;
-            cursor: zoom-in;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(204, 235, 5, 0.1);
-        }
-        .preview-container img { width: 100%; display: block; }
-
-        /* Visor Modal */
-        .modal-content { 
-            background-color: #000 !important; 
-            border: none;
-            height: 100vh;
-        }
-
-        .modal-body {
             padding: 0;
-            margin: 0;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #fffefe;
-            position: relative;
-            touch-action: none;
-            overflow: hidden; /* Evita scroll en el modal */
-        }
-        /* Ocultar posibles scrollbars en el modal */
-        .modal-body::-webkit-scrollbar {
-            display: none;
-        }
-        .modal-body {
-            scrollbar-width: none;
+            box-sizing: border-box;
         }
 
-        .zoom-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            cursor: grab;
-            will-change: transform;
-        }
-
-        .zoom-wrapper:active { cursor: grabbing; }
-
-        #foto-ampliada {
-            max-width: 100vw;
-            max-height: 100vh;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            pointer-events: none;
-            transition: transform 0.2s ease-out;
-            transform-origin: center center;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-        }
-
-        /* Botón cerrar */
-        .btn-close-viewer {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            z-index: 3000;
-            background: rgba(5, 192, 24, 0.6);
-            backdrop-filter: blur(5px);
-            border: 2px solid rgba(255,255,255,0.2);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-            font-size: 1.5rem;
-        }
-        .btn-close-viewer:active { background: #ff4d4d; transform: scale(0.95); }
-
-        /* Control vertical con fondo blanco */
-        .zoom-controls-vertical {
-            position: fixed;
-            bottom: 30px;
-            right: 20px;
-            z-index: 3000;
-            background: white;
-            padding: 15px 10px;
-            border-radius: 40px;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f8f8; /* Fondo oscuro para resaltar la imagen */
             display: flex;
             flex-direction: column;
+            height: 100vh;
+            overflow: hidden; /* Evita scroll en el body */
+        }
+
+        /* Contenedor de la imagen ocupa todo el espacio disponible */
+        .image-wrapper {
+            flex: 1;
+            width: 100%;
+            overflow: auto;
+            position: relative;
+            background-color: #f3f0f0;
+            cursor: grab;
+            touch-action: pan-x pan-y;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .image-wrapper:active {
+            cursor: grabbing;
+        }
+
+        .image-wrapper img {
+            display: block;
+            width: 100%;
+            height: auto;
+            transform-origin: center center;
+            transition: transform 0.1s ease;
+            pointer-events: all;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* Barra de controles flotante, semitransparente */
+        .controls-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(247, 245, 245, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 50px;
+            padding: 10px 20px;
+            display: flex;
             align-items: center;
-            gap: 12px;
-            border: 1px solid rgba(0,0,0,0.1);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 1000;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
         }
 
-        .zoom-controls-vertical i {
-            font-size: 1.5rem;
-            color: black;
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* Slider vertical con track verde y thumb tipo línea fina (verde) */
-        #zoomRangeVertical {
-            width: 6px;
-            height: 150px;
+        .slider-container label {
+            font-size: 14px;
+            color: #1d1704;
+            font-weight: bold;
+        }
+
+        .slider-container input[type=range] {
+            width: 200px;
+            height: 5px;
+             background: linear-gradient(90deg, #28a30f 0%, #0aba0f 50%, #4ec80c 50%);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .slider-container input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            background: #2ecc71;  /* Track verde */
-            border-radius: 10px;
-            writing-mode: bt-lr;
-            -webkit-appearance: slider-vertical;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 2px solid #119e66;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
-        /* Thumb para Chrome/Edge/Safari: línea fina verde */
-       #zoomRangeVertical::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 0;
-    height: 0;
-    opacity: 0;
-    cursor: grab;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-}
-
-      #zoomRangeVertical::-moz-range-thumb {
-    width: 0;
-    height: 0;
-    opacity: 0;
-    cursor: grab;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-}
-
-        /* Track en Firefox */
-        #zoomRangeVertical::-moz-range-track {
-            width: 6px;
-            background: #2ecc71;
-            border-radius: 10px;
+        .slider-container input[type=range]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 2px solid #10a54e;
+            border-radius: 50%;
+            cursor: pointer;
         }
 
-        /* Ajuste para Firefox (slider vertical con rotate) */
-        @-moz-document url-prefix() {
-            .zoom-controls-vertical {
-                padding: 15px 15px;
-            }
-            #zoomRangeVertical {
-                transform: rotate(270deg);
-                width: 150px;
-                height: 6px;
-                background: #2ecc71;
-            }
-            #zoomRangeVertical::-moz-range-thumb {
-                width: 20px;
-                height: 2px;
-                background: #2ecc71;
-                border: none;
-                border-radius: 1px;
-                transform: rotate(90deg); /* Para que la línea se vea horizontal en el eje vertical */
-            }
-        }
-
-        .zoom-text-vertical { 
-            color: black; 
-            font-family: monospace; 
-            min-width: 55px; 
-            text-align: center; 
-            font-size: 1rem;
-            font-weight: 600;
-            background: rgba(0,0,0,0.05);
+        .zoom-value {
+            min-width: 55px;
+            text-align: center;
+            font-weight: bold;
+            color: #04230a;
+            font-size: 16px;
+            background: rgba(0,0,0,0.3);
             padding: 4px 8px;
             border-radius: 20px;
-            margin-top: 5px;
-            border: 1px solid rgba(0,0,0,0.1);
         }
 
-        body.modal-open {
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
+        .reset-btn {
+            background: rgba(13, 203, 19, 0.833);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 30px;
+            padding: 6px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: bold;
+        }
+
+        .reset-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+          
+
+        /* En móviles, achicar un poco la barra */
+        @media (max-width: 600px) {
+            .controls-bar {
+                padding: 8px 15px;
+                gap: 10px;
+                bottom: 15px;
+            }
+            .slider-container input[type=range] {
+                width: 120px;
+            }
+            
         }
     </style>
 </head>
 <body>
-
-    <div class="preview-container" data-bs-toggle="modal" data-bs-target="#organigramaModal">
-        <img src="imagen.png" alt="Click para ver organigrama">
+    <!-- Contenedor de la imagen a pantalla completa -->
+    <div class="image-wrapper" id="imageWrapper">
+        <img src="imagen.png" 
+             alt="Organigrama" 
+             id="zoomImage"
+             loading="lazy">
     </div>
 
-    <div class="modal fade" id="organigramaModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-fullscreen">
-            <div class="modal-content">
-                
-                <button type="button" class="btn-close-viewer" data-bs-dismiss="modal" aria-label="Cerrar">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-
-                <div class="modal-body" id="modalBody">
-                    <div class="zoom-wrapper" id="dragContainer">
-                        <img src="imagen.png" id="foto-ampliada" alt="Organigrama">
-                    </div>
-
-                    <!-- Control vertical con fondo blanco, línea verde sin punto -->
-                    <div class="zoom-controls-vertical">
-                        <i class="bi bi-plus-lg" id="zoomInBtn"></i>
-                        <input type="range" id="zoomRangeVertical" min="1" max="4" step="0.1" value="1.5" orient="vertical">
-                        <i class="bi bi-dash-lg" id="zoomOutBtn"></i>
-                        <span class="zoom-text-vertical"><span id="zoomVal">150</span>%</span>
-                    </div>
-                </div>
-
-            </div>
+    <!-- Barra de controles flotante -->
+    <div class="controls-bar">
+        <div class="slider-container">
+            <label>🔍</label>
+            <input type="range" id="zoomSlider" min="1" max="4" step="0.01" value="1">
+            <span class="zoom-value" id="zoomPercent">100%</span>
         </div>
+        <button class="reset-btn" id="zoomReset">⟲ Restablecer</button>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    
 
     <script>
         (function() {
-            const img = document.getElementById('foto-ampliada');
-            const dragContainer = document.getElementById('dragContainer');
-            const zoomRange = document.getElementById('zoomRangeVertical');
-            const zoomVal = document.getElementById('zoomVal');
-            const modalBody = document.getElementById('modalBody');
-            const modalEl = document.getElementById('organigramaModal');
-            const zoomInBtn = document.getElementById('zoomInBtn');
-            const zoomOutBtn = document.getElementById('zoomOutBtn');
+            const wrapper = document.getElementById('imageWrapper');
+            const image = document.getElementById('zoomImage');
+            const slider = document.getElementById('zoomSlider');
+            const zoomPercent = document.getElementById('zoomPercent');
 
-            // Estados
-            let currentScale = 1.5;
+            let scale = 1;
+            const minScale = 1;
+            const maxScale = 4;
+
+            // Arrastre
             let isDragging = false;
-            let startPos = { x: 0, y: 0 };
-            let currentPos = { x: 0, y: 0 };
-            let lastTapTime = 0;
-            let dragStartTime = 0;
+            let startX, startY;
+            let scrollLeft, scrollTop;
 
-            // Límites de arrastre
-            let bounds = {
-                minX: -Infinity,
-                maxX: Infinity,
-                minY: -Infinity,
-                maxY: Infinity
-            };
+            function setScale(newScale) {
+                scale = Math.min(Math.max(newScale, minScale), maxScale);
+                image.style.transform = `scale(${scale})`;
+                slider.value = scale.toFixed(2);
+                zoomPercent.textContent = Math.round(scale * 100) + '%';
 
-            function updateBounds() {
-                if (!img.complete) return;
-                
-                const containerRect = modalBody.getBoundingClientRect();
-                const imgRect = img.getBoundingClientRect();
-                
-                const scaledWidth = imgRect.width;
-                const scaledHeight = imgRect.height;
-                
-                const maxX = Math.max(0, (scaledWidth - containerRect.width) / 2);
-                const maxY = Math.max(0, (scaledHeight - containerRect.height) / 2);
-                
-                bounds = {
-                    minX: -maxX,
-                    maxX: maxX,
-                    minY: -maxY,
-                    maxY: maxY
-                };
+                // Actualizar color del slider
+                const percent = (scale - minScale) / (maxScale - minScale) * 100;
+                slider.style.background = `linear-gradient(90deg, #4a9eff 0%, #4a9eff ${percent}%, #555 ${percent}%)`;
             }
 
-            function clampPosition(pos) {
-                return {
-                    x: Math.max(bounds.minX, Math.min(bounds.maxX, pos.x)),
-                    y: Math.max(bounds.minY, Math.min(bounds.maxY, pos.y))
-                };
-            }
+            setScale(1);
 
-            function updateZoom(value) {
-                currentScale = parseFloat(value);
-                
-                img.style.transform = `scale(${currentScale})`;
-                zoomVal.textContent = Math.round(currentScale * 100);
-                
-                setTimeout(() => {
-                    updateBounds();
-                    currentPos = clampPosition(currentPos);
-                    dragContainer.style.transform = `translate(${currentPos.x}px, ${currentPos.y}px)`;
-                }, 50);
-            }
+            // Slider
+            slider.addEventListener('input', (e) => setScale(parseFloat(e.target.value)));
 
-            function startDrag(e) {
-                // Evitar interferencia con los botones y el slider
-                if (e.target.closest('.zoom-controls-vertical')) return;
-                
-                e.preventDefault();
-                isDragging = true;
-                dragStartTime = Date.now();
-                
-                const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-                const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-                
-                startPos = { 
-                    x: clientX - currentPos.x, 
-                    y: clientY - currentPos.y 
-                };
-                
-                dragContainer.style.transition = "none";
-            }
+            // Reset
+            document.getElementById('zoomReset').addEventListener('click', () => {
+                setScale(1);
+                wrapper.scrollLeft = 0;
+                wrapper.scrollTop = 0;
+            });
 
-            function onDrag(e) {
-                if (!isDragging) return;
-                e.preventDefault();
-                
-                const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-                const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-                
-                let newPos = {
-                    x: clientX - startPos.x,
-                    y: clientY - startPos.y
-                };
-                
-                newPos = clampPosition(newPos);
-                currentPos = newPos;
-                
-                dragContainer.style.transform = `translate(${currentPos.x}px, ${currentPos.y}px)`;
-            }
-
-            function endDrag(e) {
-                if (!isDragging) return;
-                isDragging = false;
-                
-                const dragDuration = Date.now() - dragStartTime;
-                
-                if (dragDuration < 200 && currentScale === 1.5) {
-                    currentPos = { x: 0, y: 0 };
-                    dragContainer.style.transform = `translate(0px, 0px)`;
+            // Zoom con rueda + Ctrl
+            wrapper.addEventListener('wheel', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                    setScale(scale + delta);
                 }
-                
-                dragContainer.style.transition = "transform 0.15s ease-out";
-                
-                // Doble tap para reset
-                if (e && e.type === 'touchend' && dragDuration < 200) {
-                    const currentTime = new Date().getTime();
-                    if (currentTime - lastTapTime < 300) {
-                        zoomRange.value = 1.5;
-                        updateZoom(1.5);
-                        currentPos = { x: 0, y: 0 };
-                        dragContainer.style.transform = `translate(0px, 0px)`;
-                    }
-                    lastTapTime = currentTime;
-                }
-            }
-
-            // Eventos ratón
-            modalBody.addEventListener('mousedown', startDrag);
-            window.addEventListener('mousemove', onDrag);
-            window.addEventListener('mouseup', endDrag);
-
-            // Eventos táctiles
-            modalBody.addEventListener('touchstart', startDrag, { passive: false });
-            window.addEventListener('touchmove', onDrag, { passive: false });
-            window.addEventListener('touchend', endDrag);
-            window.addEventListener('touchcancel', endDrag);
-
-            // Rueda zoom
-            modalBody.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                let step = e.deltaY > 0 ? -0.1 : 0.1;
-                let next = Math.min(Math.max(1, currentScale + step), 4);
-                zoomRange.value = next;
-                updateZoom(next);
             }, { passive: false });
 
-            // Input del slider
-            zoomRange.addEventListener('input', (e) => updateZoom(e.target.value));
+            // Gestos táctiles
+            let initialDistance = 0;
+            let initialScale = 1;
 
-            // Botones + y -
-            zoomInBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                let next = Math.min(currentScale + 0.2, 4);
-                zoomRange.value = next;
-                updateZoom(next);
-            });
+            wrapper.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    initialDistance = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+                    initialScale = scale;
+                } else if (e.touches.length === 1 && scale > 1) {
+                    isDragging = true;
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                    scrollLeft = wrapper.scrollLeft;
+                    scrollTop = wrapper.scrollTop;
+                    wrapper.style.cursor = 'grabbing';
+                }
+            }, { passive: false });
 
-            zoomOutBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                let next = Math.max(currentScale - 0.2, 1);
-                zoomRange.value = next;
-                updateZoom(next);
-            });
+            wrapper.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    const t1 = e.touches[0];
+                    const t2 = e.touches[1];
+                    const currentDistance = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+                    if (initialDistance > 0) {
+                        setScale(initialScale * (currentDistance / initialDistance));
+                    }
+                } else if (e.touches.length === 1 && isDragging) {
+                    e.preventDefault();
+                    const x = e.touches[0].clientX;
+                    const y = e.touches[0].clientY;
+                    wrapper.scrollLeft = scrollLeft - (x - startX) * 2;
+                    wrapper.scrollTop = scrollTop - (y - startY) * 2;
+                }
+            }, { passive: false });
 
-            // Prevenir gestos nativos
-            modalBody.addEventListener('gesturestart', (e) => e.preventDefault());
-
-            // Eventos del modal
-            modalEl.addEventListener('shown.bs.modal', () => {
-                document.body.classList.add('modal-open');
-                
-                currentScale = 1.5;
-                currentPos = { x: 0, y: 0 };
-                
-                zoomRange.value = 1.5;
-                img.style.transform = `scale(1.5)`;
-                zoomVal.textContent = '150';
-                dragContainer.style.transform = `translate(0px, 0px)`;
-                
-                if (img.complete) {
-                    updateBounds();
-                } else {
-                    img.onload = () => {
-                        setTimeout(updateBounds, 100);
-                    };
+            wrapper.addEventListener('touchend', (e) => {
+                if (e.touches.length < 2) initialDistance = 0;
+                if (e.touches.length === 0) {
+                    isDragging = false;
+                    wrapper.style.cursor = 'grab';
                 }
             });
 
-            modalEl.addEventListener('hidden.bs.modal', () => {
-                document.body.classList.remove('modal-open');
+            // Doble clic
+            wrapper.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                setScale(scale < 1.5 ? 2 : 1);
             });
 
-            window.addEventListener('resize', () => {
-                if (modalEl.classList.contains('show')) {
-                    updateBounds();
-                    currentPos = clampPosition(currentPos);
-                    dragContainer.style.transform = `translate(${currentPos.x}px, ${currentPos.y}px)`;
+            // Arrastre con ratón
+            wrapper.addEventListener('mousedown', (e) => {
+                if (e.button !== 0) return;
+                if (scale > 1) {
+                    isDragging = true;
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    scrollLeft = wrapper.scrollLeft;
+                    scrollTop = wrapper.scrollTop;
+                    wrapper.style.cursor = 'grabbing';
+                    e.preventDefault();
                 }
             });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                wrapper.scrollLeft = scrollLeft - (e.clientX - startX) * 2;
+                wrapper.scrollTop = scrollTop - (e.clientY - startY) * 2;
+            });
+
+            window.addEventListener('mouseup', () => {
+                isDragging = false;
+                wrapper.style.cursor = 'grab';
+            });
+
+            image.addEventListener('contextmenu', (e) => e.preventDefault());
         })();
     </script>
 </body>
