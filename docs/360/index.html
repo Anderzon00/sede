@@ -776,9 +776,10 @@ body.welcome-visible #btnFullscreenTop {
 
         "b1_pasillo": {
           "title": "B1: Pasillo", "panorama": "pasillo2_b1.jpg",
+           "minPitch": -50,
           "hotSpots": [
             {
-              "pitch": 3.88, "yaw": -151.55, "minPitch": -50,"type": "custom", "cssClass": "custom-image-hotspot",
+              "pitch": 3.88, "yaw": -151.55,"type": "custom", "cssClass": "custom-image-hotspot",
               "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Aula 1", "icon": "icoaula.png" },
               "clickHandlerFunc": () => load("b1_s1")
             },
@@ -839,10 +840,10 @@ body.welcome-visible #btnFullscreenTop {
 
 
         "b1_s2": {
-          "title": "B1: Aula 2", "panorama": "b1s2.jpg",
+          "title": "B1: Aula 2", "panorama": "b1s2.jpg","minPitch": -50,
           "hotSpots": [
             {
-              "pitch": -30.47, "yaw": -21.70, "minPitch": -50,"type": "custom", "cssClass": "custom-image-hotspot",
+              "pitch": -30.47, "yaw": -21.70, "type": "custom", "cssClass": "custom-image-hotspot",
               "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Pasillo", "icon": "arrow1.png" },
               "clickHandlerFunc": () => load("b1_pasillo")
             }
