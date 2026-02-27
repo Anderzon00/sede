@@ -1,190 +1,296 @@
-const AUTO_MS = 5000;
+ const AUTO_MS = 5000;
 
-    const timelineEvents = () => document.querySelectorAll(".event");
-    const cards = () => document.querySelectorAll("#cardStage .card");
-    let currentIndex = 0;
+function timelineEvents() {
+    return document.querySelectorAll(".event");
+}
 
-    function setActiveDot(index){
-      timelineEvents().forEach(e => e.classList.remove("active"));
-      const ev = timelineEvents()[index];
-      if(ev) ev.classList.add("active");
+function cards() {
+    return document.querySelectorAll("#cardStage .card");
+}
+
+let currentIndex = 0;
+
+function adjustCardsHeight() {
+    var blockCards = document.querySelector('.block-cards');
+    var activeCard = document.querySelector('.card:not([hidden])');
+
+    if (!blockCards || !activeCard) return;
+
+    var cardHeight = activeCard.offsetHeight;
+
+    blockCards.style.height = cardHeight + 'px';
+}
+
+function setActiveDot(index) {
+    var events = timelineEvents();
+    if (events.length === 0) return;
+    
+    for (var i = 0; i < events.length; i++) {
+        events[i].classList.remove("active");
     }
+    
+    var ev = events[index];
+    if (ev) ev.classList.add("active");
+}
 
-    function centerTimelineOn(index){
-      const timeline = document.getElementById("timelineEvents");
-      const totalEvents = timelineEvents().length;
-      const eventWidth = 150;
-      const visibleWidth = timeline.parentElement.offsetWidth;
-      const maxOffset = -(totalEvents * eventWidth - visibleWidth + eventWidth);
-      const offset = Math.max(maxOffset, -index * eventWidth);
-      timeline.style.transform = `translateX(${offset}px)`;
+function centerTimelineOn(index) {
+    var timeline = document.getElementById("timelineEvents");
+    if (!timeline) return;
+    
+    var events = timelineEvents();
+    if (events.length === 0) return;
+
+    var eventWidth = 150;
+    var container = timeline.parentElement;
+    if (!container) return;
+
+    var containerWidth = container.offsetWidth;
+    var totalEventsWidth = events.length * eventWidth;
+    var targetScrollLeft = (index * eventWidth) - (containerWidth / 2) + (eventWidth / 2);
+    var maxScrollLeft = Math.max(0, totalEventsWidth - containerWidth);
+    var finalScrollLeft = Math.max(0, Math.min(targetScrollLeft, maxScrollLeft));
+
+    timeline.style.transform = 'translateX(-' + finalScrollLeft + 'px)';
+}
+
+function hideAllCards() {
+    var allCards = cards();
+    for (var i = 0; i < allCards.length; i++) {
+        allCards[i].hidden = true;
     }
+}
 
-    function hideAllCards(){ cards().forEach(c => c.hidden = true); }
-
-    function pauseAllMedia(){
-      document.querySelectorAll(".media-box").forEach(box => {
-        const state = getMediaState(box);
+function pauseAllMedia() {
+    var mediaBoxes = document.querySelectorAll(".media-box");
+    
+    for (var i = 0; i < mediaBoxes.length; i++) {
+        var box = mediaBoxes[i];
+        var state = getMediaState(box);
         state.paused = true;
         updateToggleText(box, state);
         stopMediaTimer(state);
-        box.querySelectorAll("video").forEach(v => { try { v.pause(); } catch(e){} });
-      });
+        
+        var videos = box.querySelectorAll("video");
+        for (var j = 0; j < videos.length; j++) {
+            try {
+                videos[j].pause();
+            } catch (e) {}
+        }
+    }
+}
+
+function showCard(index) {
+    pauseAllMedia();
+    hideAllCards();
+
+    var c = document.getElementById('card-' + index);
+    if (c) c.hidden = false;
+
+    setActiveDot(index);
+    centerTimelineOn(index);
+
+    // Ajustar la altura después de mostrar la tarjeta
+    setTimeout(function() {
+        adjustCardsHeight();
+    }, 50);
+
+    // Controlar visibilidad de coordinadores
+    var coordinatorsBlock = document.getElementById('coordinatorsBlock');
+    if (coordinatorsBlock) {
+        if (index === 0) {
+            coordinatorsBlock.classList.remove('hidden');
+        } else {
+            coordinatorsBlock.classList.add('hidden');
+        }
     }
 
-    function showCard(index){
-      pauseAllMedia();
-      hideAllCards();
-
-      const c = document.getElementById(`card-${index}`);
-      if(c) c.hidden = false;
-
-      setActiveDot(index);
-      centerTimelineOn(index);
-
-      const coord = document.getElementById("coordinators-container");
-      coord.style.visibility = (index === 0) ? "visible" : "hidden";
-
-      if(c){
-        const mediaBox = c.querySelector(".media-box");
-        if(mediaBox) startMediaAutoplay(mediaBox);
-      }
+    if (c) {
+        var mediaBox = c.querySelector(".media-box");
+        if (mediaBox) startMediaAutoplay(mediaBox);
     }
+}
 
-    function selectEvent(index){
-      const max = timelineEvents().length - 1;
-      currentIndex = Math.max(0, Math.min(index, max));
-      showCard(currentIndex);
-    }
-    function moveTimeline(direction){ selectEvent(currentIndex + direction); }
+function selectEvent(index) {
+    var max = timelineEvents().length - 1;
+    currentIndex = Math.max(0, Math.min(index, max));
+    showCard(currentIndex);
+}
 
-    // ======= CARRUSEL DE IMÁGENES =======
-    const mediaStates = new WeakMap();
+function moveTimeline(direction) {
+    selectEvent(currentIndex + direction);
+}
 
-    function getMediaState(mediaBox){
-      if(!mediaStates.has(mediaBox)){
+// Carrusel
+var mediaStates = new WeakMap();
+
+function getMediaState(mediaBox) {
+    if (!mediaStates.has(mediaBox)) {
         mediaStates.set(mediaBox, { idx: 0, paused: false, timer: null });
-      }
-      return mediaStates.get(mediaBox);
     }
+    return mediaStates.get(mediaBox);
+}
 
-    function getItems(mediaBox){
-      const viewport = mediaBox.querySelector(".image-carousel .media-viewport") || mediaBox.querySelector(".media-viewport");
-      return viewport ? Array.from(viewport.querySelectorAll(".media-item")) : [];
+function getItems(mediaBox) {
+    var viewport = mediaBox.querySelector(".image-carousel .media-viewport") || mediaBox.querySelector(".media-viewport");
+    return viewport ? Array.from(viewport.querySelectorAll(".media-item")) : [];
+}
+
+function updateCounter(mediaBox, idx, total) {
+    var counter = mediaBox.querySelector("[data-counter]");
+    if (counter) counter.textContent = (idx + 1) + '/' + total;
+}
+
+function updateToggleText(mediaBox, state) {
+    var btn = mediaBox.querySelector('[data-action="toggle"]');
+    if (btn) btn.textContent = state.paused ? "Reanudar" : "Pausar";
+}
+
+function showMediaIndex(mediaBox, idx) {
+    var items = getItems(mediaBox);
+    if (items.length === 0) return;
+    
+    for (var i = 0; i < items.length; i++) {
+        if (i === idx) {
+            items[i].classList.add("active");
+        } else {
+            items[i].classList.remove("active");
+        }
     }
+    
+    updateCounter(mediaBox, idx, items.length);
+}
 
-    function updateCounter(mediaBox, idx, total){
-      const counter = mediaBox.querySelector("[data-counter]");
-      if(counter) counter.textContent = `${idx + 1}/${total}`;
-    }
-
-    function updateToggleText(mediaBox, state){
-      const btn = mediaBox.querySelector('[data-action="toggle"]');
-      if(btn) btn.textContent = state.paused ? "Reanudar" : "Pausar";
-    }
-
-    function showMediaIndex(mediaBox, idx){
-      const items = getItems(mediaBox);
-      if(items.length === 0) return;
-      items.forEach((it, i) => it.classList.toggle("active", i === idx));
-      updateCounter(mediaBox, idx, items.length);
-    }
-
-    function stopMediaTimer(state){
-      if(state.timer){
+function stopMediaTimer(state) {
+    if (state.timer) {
         clearInterval(state.timer);
         state.timer = null;
-      }
     }
+}
 
-    function nextMedia(mediaBox){
-      const state = getMediaState(mediaBox);
-      const items = getItems(mediaBox);
-      if(items.length <= 1) return;
-      state.idx = (state.idx + 1) % items.length;
-      showMediaIndex(mediaBox, state.idx);
-    }
+function nextMedia(mediaBox) {
+    var state = getMediaState(mediaBox);
+    var items = getItems(mediaBox);
+    if (items.length <= 1) return;
+    state.idx = (state.idx + 1) % items.length;
+    showMediaIndex(mediaBox, state.idx);
+}
 
-    function prevMedia(mediaBox){
-      const state = getMediaState(mediaBox);
-      const items = getItems(mediaBox);
-      if(items.length <= 1) return;
-      state.idx = (state.idx - 1 + items.length) % items.length;
-      showMediaIndex(mediaBox, state.idx);
-    }
+function prevMedia(mediaBox) {
+    var state = getMediaState(mediaBox);
+    var items = getItems(mediaBox);
+    if (items.length <= 1) return;
+    state.idx = (state.idx - 1 + items.length) % items.length;
+    showMediaIndex(mediaBox, state.idx);
+}
 
-    function startMediaAutoplay(mediaBox){
-      const state = getMediaState(mediaBox);
-      const items = getItems(mediaBox);
+function startMediaAutoplay(mediaBox) {
+    var state = getMediaState(mediaBox);
+    var items = getItems(mediaBox);
 
-      state.idx = 0;
-      state.paused = false;
-      updateToggleText(mediaBox, state);
-      showMediaIndex(mediaBox, state.idx);
+    state.idx = 0;
+    state.paused = false;
+    updateToggleText(mediaBox, state);
+    showMediaIndex(mediaBox, state.idx);
 
-      stopMediaTimer(state);
+    stopMediaTimer(state);
 
-      if(items.length > 1){
-        state.timer = setInterval(() => {
-          if(!state.paused) nextMedia(mediaBox);
+    if (items.length > 1) {
+        state.timer = setInterval(function() {
+            if (!state.paused) {
+                nextMedia(mediaBox);
+            }
         }, AUTO_MS);
-      }
     }
+}
 
-    function wireMediaControls(){
-      document.querySelectorAll(".media-box").forEach(mediaBox => {
-        const state = getMediaState(mediaBox);
+function wireMediaControls() {
+    var mediaBoxes = document.querySelectorAll(".media-box");
+    
+    for (var i = 0; i < mediaBoxes.length; i++) {
+        var mediaBox = mediaBoxes[i];
+        var state = getMediaState(mediaBox);
         updateToggleText(mediaBox, state);
 
-        const prevBtn = mediaBox.querySelector('[data-action="prev"]');
-        const nextBtn = mediaBox.querySelector('[data-action="next"]');
-        const toggleBtn = mediaBox.querySelector('[data-action="toggle"]');
+        var prevBtn = mediaBox.querySelector('[data-action="prev"]');
+        var nextBtn = mediaBox.querySelector('[data-action="next"]');
+        var toggleBtn = mediaBox.querySelector('[data-action="toggle"]');
 
-        if(prevBtn){
-          prevBtn.addEventListener("click", () => {
-            state.paused = true;
-            updateToggleText(mediaBox, state);
-            prevMedia(mediaBox);
-          });
+        if (prevBtn) {
+            prevBtn.addEventListener("click", function(box, st) {
+                return function() {
+                    st.paused = true;
+                    updateToggleText(box, st);
+                    prevMedia(box);
+                };
+            }(mediaBox, state));
         }
 
-        if(nextBtn){
-          nextBtn.addEventListener("click", () => {
-            state.paused = true;
-            updateToggleText(mediaBox, state);
-            nextMedia(mediaBox);
-          });
+        if (nextBtn) {
+            nextBtn.addEventListener("click", function(box, st) {
+                return function() {
+                    st.paused = true;
+                    updateToggleText(box, st);
+                    nextMedia(box);
+                };
+            }(mediaBox, state));
         }
 
-        if(toggleBtn){
-          toggleBtn.addEventListener("click", () => {
-            state.paused = !state.paused;
-            updateToggleText(mediaBox, state);
-          });
+        if (toggleBtn) {
+            toggleBtn.addEventListener("click", function(box, st) {
+                return function() {
+                    st.paused = !st.paused;
+                    updateToggleText(box, st);
+                };
+            }(mediaBox, state));
         }
-      });
-
-      // Pausa el carrusel si se reproduce un video; reanuda al finalizar. [web:89]
-      document.querySelectorAll(".video-area video").forEach(v => {
-        v.addEventListener("play", () => {
-          const mediaBox = v.closest(".media-box");
-          if(!mediaBox) return;
-          const state = getMediaState(mediaBox);
-          state.paused = true;
-          updateToggleText(mediaBox, state);
-          stopMediaTimer(state);
-        });
-
-        v.addEventListener("ended", () => {
-          const mediaBox = v.closest(".media-box");
-          if(!mediaBox) return;
-          startMediaAutoplay(mediaBox);
-        });
-      });
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      document.querySelectorAll('.circle').forEach(c => c.style.zIndex = 3);
-      wireMediaControls();
-      selectEvent(0);
-    });
+    var videos = document.querySelectorAll(".video-area video");
+    for (var j = 0; j < videos.length; j++) {
+        var v = videos[j];
+        
+        v.addEventListener("play", function(video) {
+            return function() {
+                var mediaBox = video.closest(".media-box");
+                if (!mediaBox) return;
+                var state = getMediaState(mediaBox);
+                state.paused = true;
+                updateToggleText(mediaBox, state);
+                stopMediaTimer(state);
+            };
+        }(v));
+
+        v.addEventListener("ended", function(video) {
+            return function() {
+                var mediaBox = video.closest(".media-box");
+                if (!mediaBox) return;
+                startMediaAutoplay(mediaBox);
+            };
+        }(v));
+    }
+}
+
+window.addEventListener('resize', function() {
+    centerTimelineOn(currentIndex);
+    adjustCardsHeight();
+});
+
+var observer = new ResizeObserver(function() {
+    adjustCardsHeight();
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    var circles = document.querySelectorAll('.circle');
+    for (var i = 0; i < circles.length; i++) {
+        circles[i].style.zIndex = 3;
+    }
+    
+    wireMediaControls();
+    
+    var allCards = cards();
+    for (var j = 0; j < allCards.length; j++) {
+        observer.observe(allCards[j]);
+    }
+    
+    selectEvent(0);
+});

@@ -1,322 +1,569 @@
-  :root { --primary-color:#2c8134; --circle-size:20px; }
+     :root {
+      --primary-color: #2c8134;
+      --circle-size: 20px;
+    }
 
-    body{
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
       font-family: Arial, sans-serif;
-      background:#f9f9f9;
-      padding:40px 0;
-      text-align:center;
-      font-size:15px;
+      background: #f9f9f9;
+      padding: 20px 0;
+      text-align: center;
+      font-size: 15px;
+      overflow-x: hidden;
     }
 
-    h2 { max-width:900px; margin:0 auto 20px; }
-
-    body > img{
-      display:block;
-      margin:0 auto 20px;
-      max-width:100%;
-      height:auto;
-    }
-
-    .description-container{
-      background:white;
-      border-radius:12px;
-      box-shadow:0 4px 20px rgba(0,0,0,0.08);
-      padding:20px;
-      width:80%;
-      max-width:900px;
-      margin:20px auto;
-      border:1px solid rgba(0,0,0,0.05);
-      text-align:justify;
-    }
-    .description-container h3{ text-align:center; margin:0 0 15px 0; }
-
-    /* Timeline */
-    .timeline-container{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      margin-bottom:20px;
-      width:80%;
-      max-width:900px;
-      margin-left:auto;
-      margin-right:auto;
-    }
-
-    .arrow{
-      background:white;
-      border:1px solid #ccc;
-      border-radius:50%;
-      width:35px;
-      height:35px;
-      line-height:38px;
-      cursor:pointer;
-      font-size:20px;
-      user-select:none;
-      margin:0 10px;
-      flex-shrink:0;
-    }
-    .arrow:hover{ background:#2c8134; color:white; transition:background .3s ease,color .3s ease; }
-
-    .timeline{
-      display:flex;
-      align-items:center;
-      overflow:hidden;
-      width:100%;
-      position:relative;
-      flex:1;
-    }
-
-    .timeline-line{
-      position:absolute;
-      top:29%;
-      left:0; right:0;
-      height:3px;
-      background:#ccc;
-      z-index:1;
-      transform:translateY(-50%);
-    }
-
-    .timeline-events{
-      display:flex;
-      transition:transform 0.4s ease;
-      position:relative;
-      width:max-content;
-      z-index:2;
-      padding:10px 0;
-    }
-
-    .event{
-      position:relative;
-      text-align:center;
-      min-width:150px;
-      flex-shrink:0;
-      cursor:pointer;
-    }
-
-    .circle{
-      width:var(--circle-size);
-      height:var(--circle-size);
-      background:white;
-      border:3px solid #2c8134;
-      border-radius:50%;
-      margin:0 auto 8px;
-      position:relative;
-      z-index:3;
-      transition:transform .3s ease, box-shadow .3s ease, background .2s;
-      display:inline-block;
-    }
-    .circle:hover{ transform:scale(1.1); box-shadow:0 0 0 8px rgba(0,146,63,0.08); }
-
-    .event.active .circle{ background:#00B050; border-color:#13bb5e; }
-
-    .event-title{ font-size:10px; color:#333; }
-    .event-year{ display:block; font-size:14px; font-weight:bold; color:#2c8134; }
-
-    /* Stage con 1 sola tarjeta visible */
-    .fixed-card-container{
-      height: 650px;
-      margin: 20px auto;
-      width: 80%;
+    h2 {
       max-width: 900px;
+      margin: 0 auto 15px;
+      padding: 0 15px;
+      font-size: 1.8rem;
+      color: #333;
+    }
+
+    body>img {
+      display: block;
+      margin: 0 auto 15px;
+      max-width: 100%;
+      height: auto;
+      padding: 0 15px;
+      border-radius: 8px;
+    }
+
+    /* ===== ESTRUCTURA PRINCIPAL ===== */
+    .app-wrapper {
+      width: 90%;
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Bloque 1: Descripción + Timeline */
+    .block-timeline {
+      background: white;
+      border-radius: 12px 12px 0 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .description-container {
+      padding: 20px;
+      text-align: justify;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .description-container h3 {
+      text-align: center;
+      margin: 0 0 15px 0;
+      color: #2c8134;
+    }
+
+    .description-container p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #444;
+    }
+
+    .timeline-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px 10px 20px;
+    }
+
+    .arrow {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      line-height: 38px;
+      cursor: pointer;
+      font-size: 20px;
+      user-select: none;
+      margin: 0 10px;
+      flex-shrink: 0;
+      text-align: center;
+      transition: background .3s ease, color .3s ease;
+    }
+
+    .arrow:hover {
+      background: #2c8134;
+      color: white;
+    }
+
+    .timeline {
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      width: 100%;
       position: relative;
+      flex: 1;
     }
 
-    .card{
-      background:white;
-      border-radius:12px;
-      box-shadow:0 4px 20px rgba(0,0,0,0.08);
-      padding:20px;
-      width:100%;
-      border:1px solid rgba(0,0,0,0.05);
-      position:absolute;
-      top:0;
-      left:50%;
-      transform:translateX(-50%);
-      overflow:hidden;
-      text-align:left;
-    }
-    .card[hidden]{ display:none; }
-
-    .card-year{
-      position:absolute;
-      top:15px;
-      left:15px;
-      background:#2c8134;
-      color:white;
-      padding:0.5rem 1rem;
-      border-radius:12px;
-      font-weight:600;
-      z-index:5;
-      box-shadow:0 3px 10px rgba(0,0,0,0.12);
+    .timeline-line {
+      position: absolute;
+      top: 29%;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #ccc;
+      z-index: 1;
+      transform: translateY(-50%);
     }
 
-    .card-body{
-      display:flex;
-      gap:24px;
-      align-items:stretch;
-      justify-content:space-between;
-      margin-top:8px;
+    .timeline-events {
+      display: flex;
+      transition: transform 0.4s ease;
+      position: relative;
+      width: max-content;
+      z-index: 2;
+      padding: 10px 0;
     }
 
-    .card-content{
-      flex:1 1 55%;
-      padding:10px 6px;
-      text-align:justify;
-      order:1;
+    .event {
+      position: relative;
+      text-align: center;
+      min-width: 150px;
+      flex-shrink: 0;
+      cursor: pointer;
     }
 
-    .card-content h3{ margin-top:2rem; margin-bottom:0.8rem; }
-    .card-content p{
-      font-size:0.9rem;
-      color:#555;
-      line-height:1.6;
-      white-space:pre-line;
-      max-height: 430px;
-      overflow-y:auto;
+    .circle {
+      width: var(--circle-size);
+      height: var(--circle-size);
+      background: white;
+      border: 3px solid #2c8134;
+      border-radius: 50%;
+      margin: 0 auto 8px;
+      position: relative;
+      z-index: 3;
+      transition: transform .3s ease, box-shadow .3s ease, background .2s;
+      display: inline-block;
     }
 
-    /* Media */
-    .media-box{
-      flex:0 0 40%;
-      min-width:220px;
-      align-self:stretch;
-      border-radius:10px;
-      overflow:hidden;
-      position:relative;
-      box-shadow:0 6px 18px rgba(0,0,0,0.06);
-      order:2;
-      background:#fff;
-      display:flex;
-      flex-direction:column;
-      min-height: 0; /* clave para flex column */
+    .circle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 0 8px rgba(0, 146, 63, 0.08);
     }
 
-    /* VIDEOS ARRIBA */
-    .video-area{
-      padding:10px;
-      border-bottom:1px solid rgba(0,0,0,0.06);
-      background:#fff;
-    }
-    .video-area video{
-      width:100%;
-      height:220px;
-      object-fit:cover;
-      border-radius:10px;
-      background:#000;
-      display:block;
+    .event.active .circle {
+      background: #00B050;
+      border-color: #13bb5e;
     }
 
-    /* Carrusel de IMÁGENES abajo */
-    .image-carousel{
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      min-height:0;
+    .event-title {
+      font-size: 10px;
+      color: #333;
+      white-space: nowrap;
     }
 
-    /* ---- FIX PRINCIPAL: el viewport necesita altura real ---- */
-    .image-carousel .media-viewport{
-      flex:1;
-      position:relative;
-      overflow:hidden;
-      border-radius:10px;
-      background:#fff;
-
-       aspect-ratio: 4 / 3; 
-      min-height: 220px;  
+    .event-year {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      color: #2c8134;
     }
 
-    .media-item{
-      position:absolute;
-      inset:0;
-      display:none;
-      width:100%;
-      height:100%;
+    /* Bloque 2: Cards de años - CON AÑO SIN TAPAR */
+    .block-cards {
+      width: 100%;
+      background: white;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: height 0.3s ease;
     }
-    .media-item.active{ display:block; }
 
-    .media-item img{
-      width:100%;
-      height:100%;
-      object-fit: clamp(0.8, 1, 1.1);
+    .cards-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .card {
+      background: white;
+      padding: 50px 20px 20px 20px; /* Aumentado el padding superior */
+      width: 100%;
+      position: relative;
+      display: block;
+    }
+
+    .card[hidden] {
+      display: none;
+    }
+
+    /* AÑO - AHORA SIN TAPAR EL TÍTULO */
+    .card-year {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: #2c8134;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      font-weight: 600;
+      z-index: 3; /* Reducido el z-index */
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-body {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-top: 8px;
+      position: relative;
+      z-index: 2; /* Mayor z-index que el año */
+    }
+
+    .card-content {
+      flex: 1 1 55%;
+      padding: 10px 6px;
+      text-align: left;
+      order: 1;
+    }
+
+    .card-content h3 {
+      margin: 0 0 1rem 0;
+      color: #2c8134;
+      font-size: 1.3rem;
+      line-height: 1.4;
+      position: relative;
+      z-index: 3; /* Asegura que el título esté sobre el año */
+    }
+
+    /* PÁRRAFOS */
+    .card-content p {
+      font-size: 0.9rem;
+      color: #555;
+      line-height: 1.6;
+      margin: 0 0 1rem 0;
+      text-align: justify;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+
+    /* MEDIA BOX - ALINEADO CON PRIMER PÁRRAFO */
+    .media-box {
+      flex: 0 0 40%;
+      min-width: 220px;
+      align-self: flex-start;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+      order: 2;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      margin-top: calc(1rem + 1.4rem + 1rem); /* Alineado con primer párrafo */
+      z-index: 2;
+    }
+
+    .video-area {
+      padding: 10px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      background: #fff;
+    }
+
+    .video-area video {
+      width: 100%;
+      height: auto;
+      max-height: 80vh;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #000;
+      display: block;
+    }
+
+    .image-carousel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .image-carousel .media-viewport {
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #fff;
+      aspect-ratio: 4 / 3;
+      width: 100%;
+    }
+
+    .media-item {
+      position: absolute;
+      inset: 0;
+      display: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    .media-item.active {
+      display: block;
+    }
+
+    .media-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       object-position: center;
-      display:block;
+      display: block;
     }
 
-    .media-controls{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      padding:10px;
-      border-top:1px solid rgba(0,0,0,0.06);
-      background:#fff;
+    .media-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-top: 1px solid rgba(0, 0, 0, 0.06);
+      background: #fff;
     }
 
     .media-controls .left,
-    .media-controls .right{
-      display:flex;
-      gap:8px;
-      align-items:center;
+    .media-controls .right {
+      display: flex;
+      gap: 8px;
+      align-items: center;
     }
 
-    .btn{
-      border:1px solid #ccc;
-      background:#fff;
-      border-radius:10px;
-      padding:8px 10px;
-      cursor:pointer;
-      font-size:13px;
-      user-select:none;
-    }
-    .btn:hover{
-      border-color:#2c8134;
-      color:#2c8134;
+    .btn {
+      border: 1px solid #ccc;
+      background: #fff;
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-size: 13px;
+      user-select: none;
+      transition: all 0.2s ease;
     }
 
-    .counter{
-      font-size:12px;
-      color:#2c8134;
-      font-weight:bold;
-      min-width:64px;
-      text-align:center;
+    .btn:hover {
+      border-color: #2c8134;
+      color: #2c8134;
+      background: #f0f7f0;
     }
 
-    /* Coordinadores */
-    .coordinators-container{
-      margin-top:30px;
-      width:80%;
-      max-width:900px;
-      margin-left:auto;
-      margin-right:auto;
+    .counter {
+      font-size: 12px;
+      color: #2c8134;
+      font-weight: bold;
+      min-width: 64px;
+      text-align: center;
     }
 
-    .coordinators-list{
-      list-style:none;
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-      gap:30px;
-      padding-left:0;
-      margin-top:12px;
+    /* Bloque 3: Coordinadores */
+    .block-coordinators {
+      width: 100%;
+      transition: opacity 0.3s ease;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.05);
     }
 
-    .coordinator-item{ width:150px; text-align:center; }
-    .coordinator-image{
-      width:120px; height:120px;
-      border-radius:50%;
-      object-fit:cover;
-      border:4px solid #2c8134;
+    .block-coordinators.hidden {
+      display: none;
     }
-    .coordinator-name{ font-weight:bold; margin:10px 0 5px; font-size:14px; }
-    .coordinator-year{ color:#2c8134; font-size:12px; }
 
-    @media (max-width:768px){
-      body{ padding:20px 0; }
-      .description-container, .timeline-container, .fixed-card-container, .coordinators-container{ width:95%; }
-      .card-body{ flex-direction:column; }
-      .fixed-card-container{ height: 720px; }
-      .media-box{ min-width:unset; }
-      .card-content p{ max-height: 260px; }
-      .video-area video{ height:180px; }
+    .coordinators-card {
+      padding: 25px 20px;
+      width: 100%;
+      box-sizing: border-box;
     }
+
+    .coordinators-card h3 {
+      color: #2c8134;
+      font-size: 1.5rem;
+      margin: 0 0 20px 0;
+      text-align: center;
+      position: relative;
+      padding-bottom: 12px;
+    }
+
+    .coordinators-card h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: #2c8134;
+      border-radius: 3px;
+    }
+
+    .coordinators-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 25px 20px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .coordinator-item {
+      flex: 0 0 auto;
+      width: 140px;
+      text-align: center;
+    }
+
+    .coordinator-image {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #2c8134;
+      box-shadow: 0 6px 15px rgba(44, 129, 52, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .coordinator-image:hover {
+      transform: scale(1.05);
+    }
+
+    .coordinator-name {
+      font-weight: bold;
+      margin: 12px 0 5px;
+      font-size: 14px;
+      color: #333;
+      line-height: 1.3;
+      word-wrap: break-word;
+    }
+
+    .coordinator-year {
+      color: #2c8134;
+      font-size: 12px;
+      font-weight: 600;
+      background: #e8f5e9;
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 15px;
+    }
+
+    /* Footer */
+    .footer-note {
+      width: 100%;
+      margin: 10px auto 0;
+      text-align: center;
+      color: #777;
+      font-size: 12px;
+      border-top: 1px solid #ddd;
+      padding-top: 15px;
+    }
+
+    /* Media Queries */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px 0;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .app-wrapper {
+        width: 95%;
+        gap: 15px;
+      }
+
+      .card {
+        padding: 30px 15px 15px 15px;
+      }
+
+      .card-body {
+        flex-direction: column;
+      }
+
+      .media-box {
+        min-width: unset;
+        width: 100%;
+        margin-top: 0;
+        order: -1;
+      }
+
+      .video-area video {
+        max-height: 200px;
+      }
+
+      .card-content {
+        order: 0;
+      }
+
+      .card-content p {
+        font-size: 0.85rem;
+      }
+
+      .coordinators-grid {
+        gap: 15px;
+      }
+
+      .coordinator-item {
+        width: 130px;
+      }
+
+      .coordinator-image {
+        width: 100px;
+        height: 100px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card-content h3 {
+        font-size: 1.2rem;
+      }
+
+      .card-content p {
+        font-size: 0.8rem;
+        line-height: 1.5;
+      }
+
+      .coordinators-grid {
+        gap: 12px;
+      }
+
+      .coordinator-item {
+        width: calc(50% - 10px);
+        min-width: 120px;
+      }
+
+      .coordinator-image {
+        width: 90px;
+        height: 90px;
+        border-width: 3px;
+      }
+
+      .coordinator-name {
+        font-size: 12px;
+      }
+
+      .coordinator-year {
+        font-size: 10px;
+        padding: 2px 8px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .card-content p {
+        font-size: 0.75rem;
+      }
+
+      .coordinator-item {
+        width: 100%;
+        max-width: 160px;
+      }
+    }
+ 
