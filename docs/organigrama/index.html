@@ -1,9 +1,9 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>Organigrama Interactivo - Pantalla completa</title>
+    <title>Organigrama Interactivo - Zoom con navegación total</title>
     <style>
         * {
             margin: 0;
@@ -13,20 +13,19 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f8f8; /* Fondo oscuro para resaltar la imagen */
+            background-color: #111;
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow: hidden; /* Evita scroll en el body */
+            overflow: hidden;
         }
 
-        /* Contenedor de la imagen ocupa todo el espacio disponible */
         .image-wrapper {
             flex: 1;
             width: 100%;
             overflow: auto;
             position: relative;
-            background-color: #f3f0f0;
+            background-color: #222;
             cursor: grab;
             touch-action: pan-x pan-y;
             -webkit-overflow-scrolling: touch;
@@ -38,22 +37,21 @@
 
         .image-wrapper img {
             display: block;
-            width: 100%;
+            width: 100%;  /* El ancho se controlará por JS */
             height: auto;
-            transform-origin: center center;
-            transition: transform 0.1s ease;
+            transition: width 0.1s ease; /* Suaviza el cambio de zoom */
             pointer-events: all;
             user-select: none;
             -webkit-user-drag: none;
         }
 
-        /* Barra de controles flotante, semitransparente */
+        /* Barra de controles flotante */
         .controls-bar {
             position: fixed;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(247, 245, 245, 0.85);
+            background: rgba(30, 30, 30, 0.85);
             backdrop-filter: blur(8px);
             border-radius: 50px;
             padding: 10px 20px;
@@ -74,14 +72,15 @@
 
         .slider-container label {
             font-size: 14px;
-            color: #1d1704;
+            color: #ddd;
             font-weight: bold;
         }
 
         .slider-container input[type=range] {
             width: 200px;
             height: 5px;
-             background: linear-gradient(90deg, #28a30f 0%, #0aba0f 50%, #4ec80c 50%);
+            -webkit-appearance: none;
+            background: linear-gradient(90deg, hsl(134, 70%, 42%) 0%, #06b22b 50%, #09a821 50%);
             border-radius: 10px;
             outline: none;
         }
@@ -91,7 +90,7 @@
             width: 20px;
             height: 20px;
             background: white;
-            border: 2px solid #119e66;
+            border: 2px solid #0ab13f;
             border-radius: 50%;
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
@@ -101,7 +100,7 @@
             width: 20px;
             height: 20px;
             background: white;
-            border: 2px solid #10a54e;
+            border: 2px solid #12c049;
             border-radius: 50%;
             cursor: pointer;
         }
@@ -110,7 +109,7 @@
             min-width: 55px;
             text-align: center;
             font-weight: bold;
-            color: #04230a;
+            color: rgba(3, 217, 57, 0.906);
             font-size: 16px;
             background: rgba(0,0,0,0.3);
             padding: 4px 8px;
@@ -118,7 +117,7 @@
         }
 
         .reset-btn {
-            background: rgba(13, 203, 19, 0.833);
+            background: rgba(3, 217, 57, 0.906);
             border: 1px solid rgba(255,255,255,0.3);
             color: white;
             border-radius: 30px;
@@ -133,9 +132,10 @@
             background: rgba(255,255,255,0.3);
         }
 
-          
+        
 
-        /* En móviles, achicar un poco la barra */
+        
+
         @media (max-width: 600px) {
             .controls-bar {
                 padding: 8px 15px;
@@ -145,20 +145,19 @@
             .slider-container input[type=range] {
                 width: 120px;
             }
-            
+           
         }
     </style>
 </head>
 <body>
-    <!-- Contenedor de la imagen a pantalla completa -->
     <div class="image-wrapper" id="imageWrapper">
+        <!-- Imagen de ejemplo (reemplazar con la ruta del organigrama real) -->
         <img src="imagen.png" 
              alt="Organigrama" 
              id="zoomImage"
              loading="lazy">
     </div>
 
-    <!-- Barra de controles flotante -->
     <div class="controls-bar">
         <div class="slider-container">
             <label>🔍</label>
@@ -168,7 +167,6 @@
         <button class="reset-btn" id="zoomReset">⟲ Restablecer</button>
     </div>
 
-    
     
 
     <script>
@@ -182,28 +180,33 @@
             const minScale = 1;
             const maxScale = 4;
 
-            // Arrastre
+            // Variables para arrastre
             let isDragging = false;
             let startX, startY;
             let scrollLeft, scrollTop;
 
+            // Función para actualizar el zoom cambiando el ANCHO de la imagen
             function setScale(newScale) {
                 scale = Math.min(Math.max(newScale, minScale), maxScale);
-                image.style.transform = `scale(${scale})`;
+                // Aplicar el ancho en porcentaje respecto al contenedor
+                image.style.width = (scale * 100) + '%';
+                
+                // Actualizar slider y porcentaje
                 slider.value = scale.toFixed(2);
                 zoomPercent.textContent = Math.round(scale * 100) + '%';
 
-                // Actualizar color del slider
+                // Actualizar el color del slider
                 const percent = (scale - minScale) / (maxScale - minScale) * 100;
                 slider.style.background = `linear-gradient(90deg, #4a9eff 0%, #4a9eff ${percent}%, #555 ${percent}%)`;
             }
 
+            // Inicializar
             setScale(1);
 
-            // Slider
+            // Evento del slider
             slider.addEventListener('input', (e) => setScale(parseFloat(e.target.value)));
 
-            // Reset
+            // Botón restablecer: zoom 1x y scroll al inicio
             document.getElementById('zoomReset').addEventListener('click', () => {
                 setScale(1);
                 wrapper.scrollLeft = 0;
@@ -219,7 +222,7 @@
                 }
             }, { passive: false });
 
-            // Gestos táctiles
+            // Gestos táctiles (pellizco)
             let initialDistance = 0;
             let initialScale = 1;
 
@@ -231,6 +234,7 @@
                     initialDistance = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
                     initialScale = scale;
                 } else if (e.touches.length === 1 && scale > 1) {
+                    // Preparar arrastre cuando hay zoom
                     isDragging = true;
                     startX = e.touches[0].clientX;
                     startY = e.touches[0].clientY;
@@ -266,13 +270,13 @@
                 }
             });
 
-            // Doble clic
+            // Doble clic para alternar zoom (1x -> 2x, 2x -> 1x)
             wrapper.addEventListener('dblclick', (e) => {
                 e.preventDefault();
                 setScale(scale < 1.5 ? 2 : 1);
             });
 
-            // Arrastre con ratón
+            // Arrastre con ratón (solo si hay zoom > 1)
             wrapper.addEventListener('mousedown', (e) => {
                 if (e.button !== 0) return;
                 if (scale > 1) {
@@ -298,6 +302,7 @@
                 wrapper.style.cursor = 'grab';
             });
 
+            // Evitar menú contextual en la imagen
             image.addEventListener('contextmenu', (e) => e.preventDefault());
         })();
     </script>
