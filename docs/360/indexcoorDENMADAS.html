@@ -1,0 +1,1530 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tour Virtual | Sede Regional Túquerres</title>
+
+  <!-- Fuentes / Bootstrap / Pannellum -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
+
+  <style>
+    :root {
+      --brand-green: #009640;
+      --brand-yellow: #ffc933;
+      bg: radial-gradient(circle at top left, #fffbe6, #f5fff9);
+      --surface: #ffffff;
+      --muted: #4b5563;
+      --text: #111827;
+      --topbar-h: 64px;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* NAV / TOPBAR styled like nuevo but keeping same IDs for scripts */
+    .topbar {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: var(--topbar-h);
+      z-index: 1040;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 1rem;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(0, 0, 0, .04);
+    }
+
+    /* Ocultar controles inferiores mientras esté la pantalla de bienvenida */
+    body.welcome-visible #btnHomeBottom,
+    body.welcome-visible #btnBackBottom {
+      display: none !important;
+    }
+
+    .brand {
+      display: flex;
+      gap: .6rem;
+      align-items: center;
+      font-weight: 700;
+      color: var(--brand-green);
+      text-transform: uppercase;
+      font-size: .95rem;
+    }
+
+    .brand-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--brand-yellow), var(--brand-green));
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, .12)
+    }
+
+    /* Menu icon (uses btnMenu id to open offcanvas) */
+    #btnMenu {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--brand-yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, .14);
+      cursor: pointer;
+    }
+
+    #btnMenu i {
+      font-weight: 900;
+      color: #111
+    }
+
+    /* Panorama wrapper */
+    #panoramaWrap {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - var(--topbar-h));
+      margin-top: var(--topbar-h);
+    }
+
+    #panorama {
+      width: 100%;
+      height: 100%;
+      background-image: url('bloque2.jpg');
+      ;
+    }
+
+    /* Welcome (hero) — redesigned like nuevo but keep id welcome and enter button behavior */
+    #welcome {
+      position: fixed;
+      inset: var(--topbar-h) 0 0 0;
+      z-index: 1030;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      pointer-events: auto;
+    }
+
+    .welcome-card {
+      width: min(420px, 95vw);
+      /* ← Cuadrada 420px max */
+      height: 420px;
+      /* ← Altura fija = cuadrada */
+      max-width: none;
+      /* ← Quita max-width ancho */
+      border-radius: 24px;
+      /* ← Redondeo más suave */
+      background: rgba(255, 255, 255, 0.98);
+      padding: 32px;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.15);
+      /* ← Sombra más moderna */
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      /* ← Flex en lugar de grid */
+      flex-direction: column;
+      /* ← Vertical */
+      gap: 24px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      /* ← Centrado texto */
+    }
+
+    .welcome-hero {
+      position: relative;
+    }
+
+    .chip {
+      display: inline-flex;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(0, 155, 113, .06);
+      color: var(--brand-green);
+      font-weight: 700;
+      align-items: center;
+    }
+
+    .welcome-hero h1 {
+      margin: 12px 0 6px;
+      font-size: 1.6rem;
+      line-height: 1.05;
+      font-weight: 700;
+    }
+
+    .welcome-hero p {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .welcome-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 6px 4px;
+    }
+
+    .btn-enter {
+      border-radius: 999px;
+      padding: 12px 14px;
+      background: linear-gradient(135deg, var(--brand-yellow), #ffe88a);
+      border: none;
+      color: #111827;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, .12);
+    }
+
+    .btn-enter:active {
+      transform: translateY(1px)
+    }
+
+    .hint {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: .9rem;
+    }
+
+    /* Offcanvas (nav) styled to match nuevo menu look but keep id nav used by scripts */
+    .offcanvas {
+      background: var(--surface) !important;
+      color: var(--text);
+      border-right: 1px solid rgba(0, 0, 0, .04);
+      width: 320px;
+      max-width: 86vw;
+    }
+
+    .offcanvas .offcanvas-header {
+      border-bottom: 1px solid rgba(0, 0, 0, .03);
+      background: transparent;
+    }
+
+    .scene-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 0, 0, .04);
+      background: transparent;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .scene-btn.active {
+      outline: 2px solid rgba(255, 201, 51, .22);
+      background: linear-gradient(90deg, rgba(255, 250, 230, .6), rgba(255, 255, 255, .6));
+    }
+
+    /* Bottom controls */
+    #bottomControls {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 14px;
+      z-index: 6;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .ctrl-btn {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 900;
+      border: 1px solid rgba(0, 0, 0, .06);
+      margin: 0 6px;
+      background: rgba(255, 255, 255, .95);
+    }
+
+    #btnBackBottom {
+      background: var(--brand-yellow);
+      color: #111827;
+    }
+
+    /* Hotspot custom tweaks from original */
+
+
+
+    .custom-image-hotspot img {
+      width: 50px;
+      height: 50px;
+      padding: 0px;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      animation: imageBlink 2s ease-in-out infinite;
+    }
+
+    @keyframes imageBlink {
+
+      0%,
+      70% {
+
+        transform: scale(1);
+        filter: drop-shadow(0 0 0 rgba(255, 201, 51, .6));
+      }
+
+      80% {
+
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 1px rgba(255, 201, 51, .9));
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+        filter: drop-shadow(0 0 1px rgba(255, 201, 51, .85));
+      }
+    }
+
+
+
+
+
+    .hotspot-label {
+      opacity: 0;
+      margin-top: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.801);
+      border: 1px solid rgba(0, 0, 0, .04);
+      font-weight: 800;
+      font-size: .78rem;
+      white-space: nowrap;
+    }
+
+    .custom-image-hotspot:hover .hotspot-label {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+
+
+    @media (max-width:900px) {
+      .welcome-card {
+        grid-template-columns: 1fr;
+        padding: 18px;
+      }
+
+      #btnMenu {
+        width: 40px;
+        height: 40px
+      }
+    }
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- TOPBAR (visuals borrowed from nuevo; uses #btnMenu to open offcanvas) -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-badge">T</div>
+      <div>Tour Interactivo — Udenar Túquerres</div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:10px">
+      <button id="btnMenu" class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#nav"
+        aria-controls="nav">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- WELCOME (hero) -->
+  <section id="welcome" aria-label="Pantalla de bienvenida">
+    <div class="welcome-card">
+      <div class="welcome-hero">
+        <div class="chip">Bienvenido</div>
+        <h1>Recorre la Sede Regional Túquerres en <span
+            style="background:linear-gradient(135deg,var(--brand-yellow),var(--brand-green)); -webkit-background-clip:text; color:transparent">360°</span>
+        </h1>
+        <p>Explora bloques, pisos y aulas con puntos interactivos.</p>
+        <div class="mt-3" style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="chip"><i class="bi bi-mouse"></i> Hotspots</div>
+          <div class="chip"><i class="bi bi-list"></i> Menú</div>
+          <div class="chip"><i class="bi bi-arrow-left"></i> Volver</div>
+        </div>
+      </div>
+
+      <div class="welcome-actions">
+
+        <button class="btn-enter" type="button" onclick="enterTour('entrada')">
+          <i class="bi bi-play-fill"></i> Entrar al tour
+        </button>
+        <div class="hint">También puedes abrir “Menú” y escoger un bloque o piso.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OFFCANVAS NAV (structure preserved from index_mejorado; visually restyled) -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="nav" aria-labelledby="navLabel">
+    <div class="offcanvas-header">
+      <div>
+        <h5 class="offcanvas-title" id="navLabel" style="font-weight:800;">
+          <i class="bi bi-compass"></i> Navegación
+        </h5>
+        <div class="hint">Bloques y pisos</div>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+    </div>
+
+    <div class="offcanvas-body">
+      <div class="mb-2">
+        <button class="scene-btn w-100" data-scene="entrada" onclick="jumpFromMenu('entrada')">
+          <span><i class="bi bi-house-door me-2"></i> Vista principal</span>
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+
+      <div class="accordion" id="navAcc">
+
+
+
+
+        <!-- Reuse the accordion contents from index_mejorado to preserve functionality -->
+        <!-- Bloque 1 -->
+        <div class="accordion-item mb-2">
+          <h2 class="accordion-header" id="hB1">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cB1">
+              <i class="bi bi-building me-2"></i> Bloque 1
+            </button>
+          </h2>
+          <div id="cB1" class="accordion-collapse collapse" data-bs-parent="#navAcc">
+            <div class="accordion-body">
+              <button class="scene-btn" data-scene="bloque1" onclick="jumpFromMenu('bloque1')">
+                <span><i class="bi bi-signpost-2"></i> Pasillo</span><i class="bi bi-chevron-right"></i>
+              </button>
+              <button class="scene-btn" data-scene="biblio" onclick="jumpFromMenu('biblio')">
+                <span><i class="bi bi-journal-bookmark"></i> Biblioteca</span><i class="bi bi-chevron-right"></i>
+              </button>
+              <button class="scene-btn" data-scene="h_studio" onclick="jumpFromMenu('h_studio')">
+                <span><i class="bi bi-camera-reels"></i> Home Studio</span><i class="bi bi-chevron-right"></i>
+              </button>
+              <button class="scene-btn" data-scene="e1_s1" onclick="jumpFromMenu('e1_s1')">
+                <span><i class="bi bi-door-open"></i> Aulas</span><i class="bi bi-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloque 2 -->
+        <div class="accordion-item mb-2">
+          <h2 class="accordion-header" id="hB2">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cB2">
+              <i class="bi bi-building me-2"></i> Bloque 2
+            </button>
+          </h2>
+          <div id="cB2" class="accordion-collapse collapse" data-bs-parent="#navAcc">
+            <div class="accordion-body">
+              <div class="accordion" id="accB2">
+                <h2 class="accordion-header" id="hB2p1">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#cB2p1">
+                    <i class="bi bi-layers me-2"></i> Piso 1 (Aulas de Informática)
+                  </button>
+                </h2>
+                <div id="cB2p1" class="accordion-collapse collapse" data-bs-parent="#accB2">
+                  <div class="accordion-body">
+                    <button class="scene-btn" data-scene="bloque2" onclick="jumpFromMenu('bloque2')">
+                      <span><i class="bi bi-signpost-2"></i> Pasillo / Entrada</span><i class="bi bi-chevron-right"></i>
+                    </button>
+                    <button class="scene-btn" data-scene="e2_p1_info1" onclick="jumpFromMenu('e2_p1_info1')">
+                      <span><i class="bi bi-pc-display"></i> Informática 1</span><i class="bi bi-chevron-right"></i>
+                    </button>
+                    <button class="scene-btn" data-scene="e2_p1_info2" onclick="jumpFromMenu('e2_p1_info2')">
+                      <span><i class="bi bi-pc-display"></i> Informática 2</span><i class="bi bi-chevron-right"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="hB2p2">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#cB2p2">
+                      <i class="bi bi-layers me-2"></i> Piso 2 (Regionalización / Aulas)
+                    </button>
+                  </h2>
+                  <div id="cB2p2" class="accordion-collapse collapse" data-bs-parent="#accB2">
+                    <div class="accordion-body">
+                      <button class="scene-btn" data-scene="e2_p2" onclick="jumpFromMenu('e2_p2')">
+                        <span><i class="bi bi-layers"></i> Pasillo</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- /accB2 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloque 3 -->
+        <div class="accordion-item mb-2">
+          <h2 class="accordion-header" id="hB3">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cB3">
+              <i class="bi bi-building me-2"></i> Bloque 3
+            </button>
+          </h2>
+          <div id="cB3" class="accordion-collapse collapse" data-bs-parent="#navAcc">
+            <div class="accordion-body">
+              <div class="accordion" id="accB3">
+                <div class="accordion-item mb-2">
+                  <h2 class="accordion-header" id="hB3p1">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#cB3p1">
+                      <i class="bi bi-layers me-2"></i> Piso 1 ( Auditorio / Cafetería)
+                    </button>
+                  </h2>
+                  <div id="cB3p1" class="accordion-collapse collapse" data-bs-parent="#accB3">
+                    <div class="accordion-body">
+                      <button class="scene-btn" data-scene="e3_auditorio" onclick="jumpFromMenu('e3_auditorio')">
+                        <span><i class="bi bi-mic"></i> Auditorio</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                      <button class="scene-btn" data-scene="e3_cafeteria" onclick="jumpFromMenu('e3_cafeteria')">
+                        <span><i class="bi bi-cup-hot"></i> Cafetería</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item mb-2">
+                  <h2 class="accordion-header" id="hB3p2">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#cB3p2">
+                      <i class="bi bi-layers me-2"></i> Piso 2 (Area administrativa, Bienestar, Centro de Idiomas)
+                    </button>
+                  </h2>
+                  <div id="cB3p2" class="accordion-collapse collapse" data-bs-parent="#accB3">
+                    <div class="accordion-body">
+                      <button class="scene-btn" data-scene="e3_p2" onclick="jumpFromMenu('e3_p2')">
+                        <span><i class="bi bi-layers"></i> Pasillo</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item mb-2">
+                  <h2 class="accordion-header" id="hB3p3">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#cB3p3">
+                      <i class="bi bi-layers me-2"></i> Piso 3 (Aulas)
+                    </button>
+                  </h2>
+                  <div id="cB3p3" class="accordion-collapse collapse" data-bs-parent="#accB3">
+                    <div class="accordion-body">
+                      <button class="scene-btn" data-scene="e3_p3" onclick="jumpFromMenu('e3_p3')">
+                        <span><i class="bi bi-layers"></i> Pasillo</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="hB3p4">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#cB3p4">
+                      <i class="bi bi-layers me-2"></i> Piso 4 (Laboratorios)
+                    </button>
+                  </h2>
+                  <div id="cB3p4" class="accordion-collapse collapse" data-bs-parent="#accB3">
+                    <div class="accordion-body">
+                      <button class="scene-btn" data-scene="e3_p4" onclick="jumpFromMenu('e3_p4')">
+                        <span><i class="bi bi-beaker"></i> Pasillo</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                      <button class="scene-btn" data-scene="e3_p4_lab1" onclick="jumpFromMenu('e3_p4_lab1')">
+                        <span><i class="bi bi-beaker"></i> Lab 1</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                      <button class="scene-btn" data-scene="e3_p4_lab2" onclick="jumpFromMenu('e3_p4_lab2')">
+                        <span><i class="bi bi-beaker"></i> Lab 2</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                      <button class="scene-btn" data-scene="e3_p4_lab3" onclick="jumpFromMenu('e3_p4_lab3')">
+                        <span><i class="bi bi-beaker"></i> Lab 3</span><i class="bi bi-chevron-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- /accB3 -->
+
+
+
+            </div>
+          </div>
+        </div>
+
+
+
+        <button class="scene-btn mt-2" data-scene="bloque3" onclick="jumpFromMenu('bloque3')">
+          <span><i class="bi bi-signpost-2"></i> Cancha (Acceso Bloque 3)</span><i class="bi bi-chevron-right"></i>
+        </button>
+
+        <button class="scene-btn" data-scene="e3_cancha" onclick="jumpFromMenu('plazoleta')">
+          <span><i class="bi bi-dribbble"></i> plazoleta</span><i class="bi bi-chevron-right"></i>
+        </button>
+
+      </div><!-- /navAcc -->
+    </div>
+  </div>
+
+  <!-- VIEWER + BOTTOM CONTROLS -->
+  <div id="panoramaWrap">
+    <div id="panorama" aria-label="Visor 360"></div>
+
+    <div id="bottomControls">
+      <button id="btnHomeBottom" class="ctrl-btn" type="button" onclick="goHome()" disabled>
+        <i class="bi bi-house-door"></i> Inicio
+      </button>
+      <button id="btnBackBottom" class="ctrl-btn" type="button" onclick="goBack()" disabled>
+        <i class="bi bi-arrow-left"></i> Volver
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+
+  <script>
+    // Mantengo las mismas funciones/logic del index_mejorado (solo cambié la interfaz)
+    function addImageWithLabel(hotSpotDiv, args) {
+      hotSpotDiv.classList.add('custom-image-hotspot');
+      const img = document.createElement('img');
+      img.src = args.icon || 'pin.png';
+      img.alt = args.label || 'Hotspot';
+      hotSpotDiv.appendChild(img);
+      const label = document.createElement('div');
+      label.className = 'hotspot-label';
+      label.innerText = args.label || '';
+      hotSpotDiv.appendChild(label);
+    }
+
+    let viewer;
+    let tourStarted = false;
+    const historyStack = [];
+    let isGoingBack = false;
+
+    function updateBottomButtons() {
+      const homeBtn = document.getElementById('btnHomeBottom');
+      const backBtn = document.getElementById('btnBackBottom');
+
+      if (homeBtn) {
+        homeBtn.disabled = !tourStarted;
+        // CAMBIO AQUÍ: esconder completamente en inicio del tour
+        homeBtn.style.display = (tourStarted && historyStack.length > 1) ? 'inline-flex' : 'none';
+      }
+
+      if (backBtn) {
+        const hasHistory = historyStack.length > 1;
+        backBtn.disabled = !hasHistory;
+        backBtn.style.display = hasHistory ? 'inline-flex' : 'none';
+      }
+    }
+
+    function setMenuActive(sceneId) {
+      document.querySelectorAll('.scene-btn').forEach(b => b.classList.remove('active'));
+      const active = document.querySelector(`.scene-btn[data-scene="${sceneId}"]`);
+      if (active) active.classList.add('active');
+    }
+
+    function ensureTourStarted(startScene) {
+      if (tourStarted) return;
+      tourStarted = true;
+      const w = document.getElementById('welcome');
+      if (w) {
+        w.style.display = 'none';
+        document.body.classList.remove('welcome-visible');
+      }
+      historyStack.length = 0;
+      historyStack.push(startScene);
+      updateBottomButtons();
+    }
+
+    function load(sceneId, opts = { push: true }) {
+      ensureTourStarted(sceneId);
+      viewer.loadScene(sceneId);
+      if (opts.push && !isGoingBack) {
+        const last = historyStack[historyStack.length - 1];
+        if (!last) historyStack.push(sceneId);
+        else if (last !== sceneId) historyStack.push(sceneId);
+      }
+      setMenuActive(sceneId);
+      updateBottomButtons();
+    }
+
+    function goBack() {
+      if (historyStack.length <= 1) {
+        // No history: ir al inicio en lugar de no hacer nada
+        goHome();
+        return;
+      }
+      isGoingBack = true;
+      historyStack.pop();
+      const prev = historyStack[historyStack.length - 1];
+      if (prev) {
+        viewer.loadScene(prev);
+        setMenuActive(prev);
+      } else {
+        goHome();
+      }
+      updateBottomButtons();
+      isGoingBack = false;
+    }
+
+    function goHome() {
+      const firstScene = (config && config.default && config.default.firstScene) ? config.default.firstScene : 'entrada';
+      let current = null;
+      try { if (viewer && typeof viewer.getScene === 'function') current = viewer.getScene(); } catch (e) { }
+
+      // Si no se ha iniciado el tour o estamos en la primera escena, mostrar la pantalla de bienvenida
+      if (!tourStarted || current === firstScene || historyStack.length <= 1) {
+        const w = document.getElementById('welcome');
+        if (w) w.style.display = 'grid';
+        document.body.classList.add('welcome-visible');
+        // reset estado de tour
+        tourStarted = false;
+        historyStack.length = 0;
+        updateBottomButtons();
+        return;
+      }
+
+      // En otros casos, volver a la escena de entrada
+      load('entrada');
+    }
+
+    function enterTour(startScene) {
+      ensureTourStarted(startScene);
+      viewer.loadScene(startScene);
+      setMenuActive(startScene);
+      updateBottomButtons();
+    }
+
+    function jumpFromMenu(sceneId) {
+      bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('nav')).hide();
+      // Guardar la escena actual en el historial antes de navegar, para que "Volver" tenga algo a qué regresar
+      try {
+        if (viewer && typeof viewer.getScene === 'function') {
+          const current = viewer.getScene();
+          if (current) {
+            const last = historyStack[historyStack.length - 1];
+            if (!last || last !== current) {
+              historyStack.push(current);
+            }
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
+      load(sceneId);
+    }
+
+    // CONFIG (copiado de index_mejorado)
+    const config = {
+      default: {
+        firstScene: "entrada",
+        autoLoad: false,
+        sceneFadeDuration: 800,
+        hfov: 120,
+        showControls: false
+      },
+      scenes: {
+        "entrada": {
+          "title": "Entrada Principal - Universidad de Nariño",
+          "panorama": "entrada.jpeg",
+          "pitch": -38.13,
+          "yaw": 12.87,
+          "hfov": 120,
+          "minYaw": -90,        // ← Límite IZQUIERDA (-90°)
+          "maxYaw": 90,
+
+          "hotSpots": [
+            {
+              "text": "Ir a Biblioteca", "pitch": -57.59, "yaw": 12.95, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "BLOQUE 1", "icon": "ico1.png" },
+              "clickHandlerFunc": () => load("bloque1")
+            },
+            {
+              "pitch": -20.41, "yaw": 2.95, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "BLOQUE 2", "icon": "ico2.png" },
+              "clickHandlerFunc": () => load("bloque2")
+            },
+            {
+              "pitch": -15.97, "yaw": 28.29, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "BLOQUE 3", "icon": "ico3.png" },
+              "clickHandlerFunc": () => load("bloque3")
+            },
+            {
+              "pitch": -25.66, "yaw": -18.29, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "PLAZOLETA", "icon": "icoplaza.png" },
+              "clickHandlerFunc": () => load("plazoleta")
+            }
+          ]
+        },
+
+        "bloque1": {
+          "title": "Bloque 1: Pasillo Principal",
+          "panorama": "bloque1.jpg",
+          "pitch": -12.37,
+          "yaw": 21.67,
+          "hfov": 120,
+          "hotSpots": [
+            {
+              "pitch": -0.10, "yaw": 41.78, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "BIBLIOTECA", "icon": "icobiblio.png" },
+              "clickHandlerFunc": () => load("biblio")
+            },
+            {
+              "pitch": -11.04, "yaw": 41.78, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "HOME STUDIO", "icon": "icohome.png" },
+              "clickHandlerFunc": () => load("h_studio")
+            },
+            {
+              "pitch": -3.05, "yaw": -5.15, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Aulas", "icon": "icoaula.png" },
+              "clickHandlerFunc": () => load("b1_pasillo")
+            },
+            {
+              "pitch": -2.47, "yaw": 63.95, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Aula 4", "icon": "icoinfo.png" },
+
+            },
+            {
+              "pitch": -11.38, "yaw": 57.05, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("b1_pasillo2")
+            },
+            {
+              "pitch": -12.88, "yaw": -66.96, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "PLAZOLETA", "icon": "icoplaza.png" },
+              "clickHandlerFunc": () => load("plazoleta")
+            }
+          ]
+        },
+
+        "biblio": {
+          "title": "B1: Biblioteca",
+          "panorama": "biblioteca.jpg",
+          "hotSpots": []
+        },
+
+        "h_studio": {
+          "pitch": -12.37,
+          "yaw": 158,
+          "minPitch": -50,
+          "title": "B1: Home Studio",
+          "panorama": "homestudio.jpg",
+          "hotSpots": [
+            {
+              "pitch": -14,
+              "yaw": 158,
+              "type": "info",
+              "text": "Home Studio Udenar Túquerres: Producción musical, audio y grabación. Haz clic para ver el canal de YouTube.",
+              "URL": "https://www.youtube.com/@homeestudio894/videos"
+            }
+          ]
+        },
+
+        "b1_pasillo": {
+          "title": "B1: Pasillo", "panorama": "pasillo2_b1.jpg",
+          "hotSpots": [
+            {
+              "pitch": 3.88, "yaw": -151.55, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Aula 1", "icon": "icoaula.png" },
+              "clickHandlerFunc": () => load("b1_s1")
+            },
+            {
+              "pitch": 9.34, "yaw": 68.32, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Aula 2", "icon": "icoaula.png" },
+              "clickHandlerFunc": () => load("b1_s2")
+            },
+            {
+              "pitch": 7.25, "yaw": -37.58, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Aula 3", "icon": "icoinfo.png" },
+            },
+
+            {
+              "pitch": -20, "yaw": 139, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "salir", "icon": "arrow1.png" },
+              "clickHandlerFunc": function () { load("bloque1") }
+
+            }
+
+
+          ]
+        },
+
+        "b1_s1": {
+          "title": "B1: Aula 1", "panorama": "b1s1.jpg",
+          "hotSpots": [
+            {
+              "pitch": -22.19, "yaw": -110, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Pasillo", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("b1_pasillo")
+            }
+          ]
+        },
+
+
+
+ "b1_pasillo2": {
+
+   "pitch": -8,
+          "yaw": 103,          "hfov": 120,
+          "title": "B1: Pasillo 2", "panorama": "bloque1_pasillo2.jpg",
+          "hotSpots": [
+            {
+              "pitch": -10, "yaw": -68, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("b1_pasillo")
+            },
+
+             {
+              "pitch": -5, "yaw": 103, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("bloque3")
+            }
+          ]
+        },
+
+
+
+        "b1_s2": {
+          "title": "B1: Aula 2", "panorama": "b1s2.jpg",
+          "hotSpots": [
+            {
+              "pitch": -30.47, "yaw": -21.70, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Pasillo", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("b1_pasillo")
+            }
+          ]
+        },
+
+
+
+        "bloque2": {
+          "title": "Bloque 2: Pasillo de Entrada",
+          "panorama": "bloque2.jpg",
+          "hotSpots": [
+            {
+              "pitch": -15, "yaw": -11.87, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Aula Informática 1", "icon": "icoaulainfo.png" },
+              "clickHandlerFunc": () => load("e2_p1_info1")
+            },
+            {
+              "pitch": -15, "yaw": 6.32, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Aula Informática 2", "icon": "icoaulainfo.png" },
+              "clickHandlerFunc": () => load("e2_p1_info2")
+            },
+            {
+              "pitch": 1.92, "yaw": -46.77, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "PISO 2", "icon": "icosubir.png" },
+              "clickHandlerFunc": () => load("e2_p2")
+            },
+            {
+              "pitch": -2, "yaw": 150, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "BLOQUE 1", "icon": "ico1.png" },
+              "clickHandlerFunc": () => load("bloque1")
+            },
+            {
+              "pitch": -2, "yaw": 80, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "BLOQUE 3", "icon": "ico3.png" },
+              "clickHandlerFunc": () => load("bloque3")
+            },
+            {
+              "pitch": -26, "yaw": -100, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("plazoleta")
+            },
+
+            {
+              "pitch": -32, "yaw": -6, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("b2_pasillo")
+            },
+ {
+              "pitch": -19, "yaw": 86, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("bloque3")
+            },
+
+
+
+
+
+            {
+              "pitch": -14.02,
+              "yaw": 22.30,
+              "type": "info",
+              "text": "Sanitarios."
+            }
+          ]
+        },
+
+        "e2_p1_info1": { "pitch": 0, "minPitch": -50, "maxPitch": 100, "title": "Bloque 2: Aula Informática 1", "panorama": "ainfo1.jpg", "hotSpots": [] },
+        "e2_p1_info2": { "pitch": -2.15, "yaw": -168, "minPitch": -50, "maxPitch": 100, "title": "Bloque 2: Aula Informática 2", "panorama": "ainfo2.jpg", "hotSpots": [] },
+        "b2_pasillo": {
+          "pitch": -2.15, "yaw": -168, "minPitch": -50, "maxPitch": 100, "title": "Bloque 2: Aula Informática 2", "panorama": "bloque2_pasillo.jpg", "hotSpots": [
+
+            {
+              "pitch": -2, "yaw": -3, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("plazoleta2")
+            },
+
+            {
+              "pitch": 7.32, "yaw": -25.23,
+              "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Piso 2", "icon": "icosubir.png" },
+              "clickHandlerFunc": () => load("e2_p2")
+            },
+
+
+            {
+              "pitch": -5, "yaw": 175,
+              "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("e3_p1")
+            },
+
+
+            {
+              "pitch": 11, "yaw": 58,
+              "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Aula Informática 2", "icon": "icoaulainfo.png" },
+              "clickHandlerFunc": () => load("e2_p1_info2")
+            },
+
+
+            {
+              "pitch": 8, "yaw": 106,
+              "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Aula Informática 1", "icon": "icoaulainfo.png" },
+              "clickHandlerFunc": () => load("e2_p1_info1")
+            },
+
+ {
+              "pitch": -19, "yaw":-80,
+              "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("bloque2")
+            },
+
+
+
+            {
+              "pitch": 1.89,
+              "yaw": -169.71,
+              "type": "info",
+              "text": "Sanitarios."
+            }
+
+
+
+
+          ]
+        },
+
+        "e2_p2": {
+          "title": "Bloque 2: Piso 2",
+          "panorama": "b2piso2.jpg",
+          "hotSpots": [
+            {
+              "pitch": -8.37, "yaw": -43.88, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Bloque 2 Aula 1", "icon": "icoinfo.png" }
+            },
+            {
+              "pitch": -8.18, "yaw": -8.34, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Bloque 2 Aula 2", "icon": "icoinfo.png" }
+            },
+            {
+              "pitch": -3.22, "yaw": 81.68, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Regionalización", "icon": "icoinfo.png" },
+              "clickHandlerFunc": () => load("e2_p2_reg")
+            },
+            {
+              "pitch": -0.59, "yaw": 157.63, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "BLOQUE1", "icon": "ico1.png" },
+              "clickHandlerFunc": () => load("bloque1")
+            },
+            {
+              "pitch": -20, "yaw": 75, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Bloque 3 Piso 2", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("e3_p2")
+            },
+            {
+              "pitch": -12.49, "yaw": -119, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Bloque 2 Piso1", "icon": "icobajar.png" },
+              "clickHandlerFunc": () => load("b2_pasillo")
+            },
+          ]
+        },
+
+        "e2_p2_a1": { "title": "Bloque 2: Aula 1", "panorama": "entrada.jpg", "hotSpots": [] },
+        "e2_p2_a2": { "title": "Bloque 2: Aula 2", "panorama": "entrada.jpg", "hotSpots": [] },
+
+        "e2_p2_reg": { "title": "Bloque 2: Regionalización", "panorama": "entrada.jpg", "hotSpots": [] },
+        "plazoleta": {
+          "title": "Plazoleta", "panorama": "plazoleta.jpg",
+
+          "hotSpots": [
+
+            {
+              "pitch": 3.46, "yaw": 147.59, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "BLOQUE 1", "icon": "ico1.png" },
+              "clickHandlerFunc": () => load("bloque1")
+            },
+            {
+              "pitch": 11.46, "yaw": 41.59, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "BLOQUE 2", "icon": "ico2.png" },
+              "clickHandlerFunc": () => load("bloque2")
+            },
+            {
+              "pitch": 5.47, "yaw": 76.33, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "BLOQUE 3", "icon": "ico3.png" },
+              "clickHandlerFunc": () => load("bloque3")
+            },
+            {
+              "pitch": -16.35, "yaw": 67.49, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("bloque2")
+            },
+            {
+              "pitch": -13, "yaw": 18, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("plazoleta2")
+            }
+          ],
+          "autoRotate": -2
+
+        },
+
+
+  "plazoleta2": {
+          "title": "Plazoleta", "panorama": "plazoleta2.jpg",
+
+          "hotSpots": [
+
+            {
+              "pitch": -6, "yaw": -70, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("plazoleta")
+            },
+            {
+              "pitch": 2, "yaw": -121, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Pasillo bloque 2", "icon": "ico2.png" },
+              "clickHandlerFunc": () => load("b2_pasillo")
+            },
+            
+           {
+              "pitch": 0, "yaw": 89, "type": "info", "text": "Escenario."
+            },
+            
+
+
+
+          ],
+          "autoRotate": -2
+
+        },
+
+
+
+
+
+        "bloque3": {
+          "title": "Bloque 3: Vista General",
+         // "panorama": "cancha.jpeg",
+          "panorama": "bloque3.jpg",
+          "hotSpots": [
+
+            {
+              "pitch": -20.10, "yaw": 18.28, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "AUDITORIO", "icon": "icoauditorio.png" },
+              "clickHandlerFunc": () => load("e3_auditorio")
+            },
+            {
+              "pitch": -18, "yaw": 32.29, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Piso 1", "icon": "icosubir.png" },
+              "clickHandlerFunc": () => load("e3_p1")
+            },
+            {
+              "pitch": -7, "yaw": 32.29, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Piso 2", "icon": "icosubir.png" },
+              "clickHandlerFunc": () => load("e3_p2")
+            },
+            {
+              "pitch": 5, "yaw": 32.29, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Piso 3", "icon": "icosubir.png" },
+              "clickHandlerFunc": () => load("e3_p3")
+            },
+            {
+              "pitch": 19, "yaw": 32.29, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Piso 4", "icon": "icosubir.png" },
+              "clickHandlerFunc": () => load("e3_p4")
+            },
+            {
+              "pitch": -27.58, "yaw": 49.31, "type": "info", "text": "Cancha: espacio para actividades deportivas e integración."
+            },
+            {
+              "pitch": -2, "yaw": 190, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "BLOQUE 1", "icon": "ico1.png" },
+              "clickHandlerFunc": () => load("bloque1")
+            },
+            {
+              "pitch": -2, "yaw": 260, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "BLOQUE 2", "icon": "ico2.png" },
+              "clickHandlerFunc": () => load("bloque2")
+            },
+            {
+              "pitch": -4.02,
+              "yaw": 66.30,
+              "type": "info",
+              "text": "Rampa.",
+              "clickHandlerFunc": () => load("e3_rampa")
+            }
+
+          ]
+        },
+
+        "e3_auditorio": { "title": "Bloque 3: Auditorio", "panorama": "auditorio.jpg", "hotSpots": [] },
+
+        "e3_p1": { "pitch": -2.20,
+        "yaw": -168.14,
+        "title": "Bloque 3: Piso 1", "panorama": "cafeteria.jpg", "hotSpots": [
+ 
+         {
+              "pitch": -22, "yaw": 83, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": function () { load("bloque3") }
+            },
+
+               {
+              "pitch": -2, "yaw": 135, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": function () { load("b2_pasillo") }
+            },
+    {
+              "pitch": 7.45, "yaw": -159.65, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Cafeteria", "icon": "icocafe.png" },
+               
+            },
+
+
+             {
+              "pitch": 4, "yaw": -2, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Piso 2", "icon": "icosubir.png" },
+              "clickHandlerFunc": () => load("e3_p2")
+            },
+
+
+
+
+        ] },
+        "e3_rampa": {
+          "title": "Bloque 3: Rampa", "panorama": "rampa1.jpeg", "hotSpots": [
+
+            {
+              "pitch": -24, "yaw": 71, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("e3_rampa_acceso")
+            },
+
+           {
+              "pitch": 17, "yaw": 25, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "icosubir.png" },
+              "clickHandlerFunc": () => load("e3_p3")
+            }
+
+
+          
+
+
+
+ 
+
+
+
+
+          ]
+        },
+ "e3_rampa_acceso": {
+          "title": "Bloque 3: Rampa", "panorama": "rampa.jpg", "hotSpots": [
+
+            {
+              "pitch": -11, "yaw": -116, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("e3_p1")
+            },
+
+           {
+              "pitch": 17, "yaw": 25, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Avanzar", "icon": "icosubir.png" },
+              "clickHandlerFunc": () => load("e3_rampa")  
+            },
+          ]
+        },
+        "e3_p2": {
+          "title": "Bloque 3: Piso 2",
+          "panorama": "bloque3p2.jpg",
+          "minPitch": -50,
+          "hotSpots": [
+            {
+              "pitch": 2.62, "yaw": -113, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "ADMINISTRACIÓN", "icon": "icoinfo.png" }
+            },
+            { "pitch": 2.62, "yaw": -113, "type": "info", "text": "Area administrativa (Dirección, Secretaría General y Secretaría Académica." },
+
+            {
+              "pitch": 3.7, "yaw": -47.8, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "BIENESTAR", "icon": "icoinfo.png" }
+            },
+            { "pitch": 3.7, "yaw": -47.8, "type": "info", "text": "Bienestar Universitario (Coordinación de Bienestar, Cultura, Escuchadero, Deportes), Centro de idiomas" },
+
+            {
+              "pitch": 2.55, "yaw": -31.02, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Aula 1", "icon": "icoinfo.png" },
+
+            },
+            {
+              "pitch": 1.88, "yaw": -25.12, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Aula 2", "icon": "icoaula.png" },
+              "clickHandlerFunc": () => load("e3_p2_s2")
+
+            },
+            {
+              "pitch": -12.54, "yaw": 176, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Bloque2 Piso 2", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("e2_p2")
+            },
+            {
+              "pitch": 2.28, "yaw": -16.12, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Subir al Piso 3", "icon": "icosubir.png" },
+              "clickHandlerFunc": () => load("e3_p3") 
+            },
+
+ {
+              "pitch": -10, "yaw": -14, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Bajar al piso 1 ", "icon": "icobajar.png" },
+              "clickHandlerFunc": function () { load("e3_p1") }
+            }
+
+          ]
+        },
+
+        "e3_p2_s2": {
+          "title": "Bloque 3: Aula 202", "panorama": "b3_p2_a2.jpg", "hotSpots": [
+
+
+
+            {
+              "pitch": -9, "yaw": -20, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Bloque2 Piso2", "icon": "arrow1.png" },
+              "clickHandlerFunc": () => load("e3_p2")
+            },
+          ]
+        },
+
+        "e3_p3": {
+          "title": "Bloque 3: Piso 3",
+          "panorama": "bloque3p3.jpg",
+          "minPitch": -50,
+          "hotSpots": [
+            {
+              "pitch": 7.88, "yaw": -81.85, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Aula 3", "icon": "icoinfo.png" },
+              "clickHandlerFunc": () => load("e3_p3_s3")
+            },
+            {
+              "pitch": 1.78, "yaw": -123.78, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Aula 4", "icon": "icoinfo.png" },
+              "clickHandlerFunc": () => load("e3_p3_s4")
+            },
+            {
+              "pitch": 1.66, "yaw": -165.47, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Aula 5", "icon": "icoinfo.png" },
+              "clickHandlerFunc": () => load("e3_p3_s5")
+            },
+            {
+              "pitch": -7.89, "yaw": 8.34, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Bajar al Piso 2", "icon": "icobajar.png" },
+              "clickHandlerFunc": () => load("e3_p2")
+            },
+            {
+              "pitch": 13.4, "yaw": 10.4, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Bloque 3 laboratorios ", "icon": "icosubir.png" },
+              "clickHandlerFunc": function () { load("e3_p4") }
+            }
+            
+            
+          ]
+        },
+
+        "e3_p3_s3": { "title": "Bloque 3: Aula 301", "panorama": "entrada.jpg", "hotSpots": [] },
+        "e3_p3_s4": { "title": "Bloque 3: Aula 302", "panorama": "entrada.jpg", "hotSpots": [] },
+        "e3_p3_s5": { "title": "Bloque 3: Aula 303", "panorama": "entrada.jpg", "hotSpots": [] },
+
+        "e3_p4": {
+          "title": "Bloque 3: Piso 4",
+          "panorama": "bloque3p4.jpg",
+          "pitch": -2.17,
+          "yaw": 111.72,
+          "hfov": 120,
+          "minPitch": -50,
+          "hotSpots": [
+            {
+              "pitch": 0, "yaw": 63.60, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Laboratorio Química", "icon": "icoquimica.png" },
+              "clickHandlerFunc": () => load("e3_p4_lab1")
+            },
+            {
+              "pitch": 4, "yaw": 76.85, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Laboratorio Biología", "icon": "icobiologia.png" },
+              "clickHandlerFunc": () => load("e3_p4_lab2")
+            },
+            {
+              "pitch": 6.68, "yaw": 165.86, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Laboratorio Física", "icon": "icofisica.png" },
+              "clickHandlerFunc": () => load("e3_p4_lab3")
+            },
+
+{
+              "pitch": -5, "yaw": -121, "type": "custom", "cssClass": "custom-image-hotspot",
+              "createTooltipFunc": addImageWithLabel, "createTooltipArgs": { "label": "Bajar al Piso 3", "icon": "icobajar.png" },
+              "clickHandlerFunc": () => load("e3_p3")
+            }
+
+          ]
+        },
+
+        "e3_p4_lab1": { "minPitch": -50, "title": "Bloque 3: Laboratorio 1", "panorama": "labquimica.jpg", "hotSpots": [] },
+        "e3_p4_lab2": { "minPitch": -50, "title": "Bloque 3: Laboratorio 2", "panorama": "labbiologia.jpg", "hotSpots": [] },
+        "e3_p4_lab3": { "minPitch": -50, "title": "Bloque 3: Laboratorio 3", "panorama": "labfisica.jpg", "hotSpots": [] }
+      }
+    };
+
+    viewer = pannellum.viewer('panorama', config);
+    updateBottomButtons();
+
+    // Marcar estado de bienvenida al cargar para ocultar controles globales
+    document.addEventListener('DOMContentLoaded', function () {
+      document.body.classList.add('welcome-visible');
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('nav')).hide();
+      if (e.altKey && e.key.toLowerCase() === 'b') goBack();
+      if (e.altKey && e.key.toLowerCase() === 'h') goHome();
+    });
+
+    /////DEPURAR 
+
+    function agregarInclinacionY() {
+      const panoramaWrap = document.getElementById('panoramaWrap') || document.getElementById('panorama');
+      if (!panoramaWrap) return console.error('No panorama encontrado');
+
+      // 1. PUNTO CENTRAL ROJO
+      let centerDot = document.getElementById('centerDot');
+      if (!centerDot) {
+        centerDot = document.createElement('div');
+        centerDot.id = 'centerDot';
+        centerDot.style.cssText = `
+      position: absolute; top: 50%; left: 50%; width: 12px; height: 12px;
+      margin: -6px 0 0 -6px; background: #ff4444; border: 3px solid #ffffff;
+      border-radius: 50%; z-index: 100; pointer-events: none; box-shadow: 0 0 12px #ff4444;
+    `;
+        panoramaWrap.appendChild(centerDot);
+      }
+
+      // 2. DISPLAY VERDE
+      let display = document.getElementById('display');
+      if (!display) {
+        display = document.createElement('div');
+        display.id = 'display';
+        display.style.cssText = `
+      position: absolute; top: 20px; left: 20px; z-index: 101;
+      background: rgba(0,150,64,0.95); color: #fff; padding: 16px;
+      border-radius: 10px; border: 2px solid #00ff88; font-family: monospace;
+      font-size: 15px; font-weight: bold; min-width: 200px; box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    `;
+        panoramaWrap.appendChild(display);
+        display.innerHTML = `
+      <div>Escena: <span id="sceneName">-</span></div>
+      <div>"pitch": <span id="pVal">0.00</span></div>
+      <div>,"yaw": <span id="yVal">0.00</span></div>
+      <div>Incl.Y: <span id="rollVal">0.00</span></div>
+    `;
+      }
+
+      // 3. INCLINACIÓN Y REAL (DeviceOrientation)
+      let rollReal = 0;
+      const initSensors = () => {
+        if (window.DeviceOrientationEvent) {
+          window.addEventListener('deviceorientation', (e) => {
+            rollReal = Math.round((e.gamma || 0) * 100) / 100;
+            document.getElementById('rollVal').textContent = rollReal;
+          });
+        }
+      };
+
+      // 4. UPDATE COMPLETO
+      const updateAll = () => {
+        if (!viewer) return;
+        const pitch = viewer.getPitch().toFixed(2);
+        const yaw = viewer.getYaw().toFixed(2);
+        const scene = viewer.getScene() || 'n/a';
+
+        document.getElementById('pVal').textContent = pitch;
+        document.getElementById('yVal').textContent = yaw;
+        document.getElementById('sceneName').textContent = scene;
+      };
+
+      // Intervalo principal
+      if (window.orientationInt) clearInterval(window.orientationInt);
+      window.orientationInt = setInterval(updateAll, 30);
+
+      // Iniciar sensores
+      initSensors();
+
+      console.log('✅ Punto rojo + Display + Incl.Y activados');
+    }
+
+    // EJECUTAR
+    setTimeout(agregarInclinacionY, 500); // Espera Pannellum
+    
+  </script>
+</body>
+
+</html>

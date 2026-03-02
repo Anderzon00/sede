@@ -1,4 +1,4 @@
- const AUTO_MS = 5000;
+  const AUTO_MS = 5000;
 
 function timelineEvents() {
     return document.querySelectorAll(".event");

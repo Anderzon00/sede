@@ -1,0 +1,296 @@
+    :root {
+      --brand-green: #009640;
+      --brand-yellow: #ffc933;
+      --surface: #ffffff;
+      --muted: #4b5563;
+      --text: #111827;
+      --topbar-h: 64px;
+      --shadow-soft: 0 10px 30px rgba(0,0,0,0.1);
+      --shadow-btn: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    /* --- RESETEO GLOBAL --- */
+    * { 
+      box-sizing: border-box; 
+      -webkit-tap-highlight-color: transparent; 
+    }
+
+    button {
+      background: transparent;
+      border: none;
+      color: inherit;
+      font-family: inherit;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: "Montserrat", system-ui, -apple-system, sans-serif;
+      background-size: cover;
+      background-position: center;
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    /* --- ACCESIBILIDAD --- */
+    *:focus { outline: none; }
+    *:focus-visible {
+      outline: 2px solid var(--brand-yellow);
+      outline-offset: 2px;
+    }
+
+    /* --- NAV / TOPBAR --- */
+    .topbar {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: var(--topbar-h);
+      z-index: 1040;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.2rem;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .brand {
+      display: flex;
+      gap: .7rem;
+      align-items: center;
+      font-weight: 800;
+      color: var(--brand-green);
+      text-transform: uppercase;
+      font-size: .9rem;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-badge {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--brand-yellow), var(--brand-green));
+      display: grid; place-items: center;
+      color: white;
+      font-size: 1.2rem;
+      box-shadow: var(--shadow-btn);
+    }
+
+    #btnMenu {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: var(--brand-yellow);
+      display: grid; place-items: center;
+      box-shadow: var(--shadow-btn);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    #btnMenu:active { transform: scale(0.95); }
+    #btnMenu i { font-size: 1.4rem; color: #111; }
+
+    /* --- ACORDEÓN --- */
+    .accordion-button {
+      background-color: var(--surface);
+      color: var(--text);
+      box-shadow: none !important;
+    }
+    .accordion-button:not(.collapsed) {
+      background: var(--surface);
+      color: var(--brand-green);
+    }
+    .accordion-button:active, 
+    .accordion-button:focus {
+      background: var(--surface);
+      box-shadow: none !important;
+    }
+
+    /* --- PANORAMA WRAPPER --- */
+    #panoramaWrap {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - var(--topbar-h));
+      margin-top: var(--topbar-h);
+      background: #111;
+    }
+    #panorama { width: 100%; height: 100%; }
+
+    /* --- WELCOME SCREEN --- */
+    #welcome {
+      position: fixed;
+      inset: var(--topbar-h) 0 0 0;
+      z-index: 1035;
+      display: grid;
+      place-items: center;
+      background: rgba(0,0,0,0.4);
+      background-image: url("bg.png");
+      background-size: cover;
+      background-position: center;
+      backdrop-filter: blur(8px);
+      padding: 20px;
+      transition: opacity 0.4s ease;
+    }
+    body:not(.welcome-visible) #welcome { display: none; }
+
+    .welcome-card {
+      width: min(440px, 90vw);
+      border-radius: 24px;
+      background: white;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    .welcome-hero h1 { margin: 16px 0 8px; font-size: 1.8rem; font-weight: 800; }
+    .welcome-hero p { color: var(--muted); font-weight: 600; margin-bottom: 24px; }
+
+    .btn-enter {
+      border-radius: 50px;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, var(--brand-yellow), #ffe88a);
+      color: #111;
+      font-weight: 800;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition: transform 0.2s;
+    }
+    .btn-enter:hover { transform: translateY(-2px); }
+    .btn-enter:active { transform: translateY(1px); }
+
+    /* --- CONTROLES FLOTANTES --- */
+    #sceneTitle {
+      position: absolute;
+      top: 20px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.75);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      z-index: 5;
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+      backdrop-filter: blur(4px);
+    }
+    #sceneTitle.visible { opacity: 1; }
+
+    .control-panel {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+      background: rgba(255,255,255,0.15);
+      padding: 6px;
+      border-radius: 50px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .ctrl-btn {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: white;
+      display: grid; place-items: center;
+      font-size: 1.2rem;
+      color: #111;
+      box-shadow: var(--shadow-btn);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .ctrl-btn:active { transform: scale(0.9); }
+    .ctrl-btn.active { 
+      color: var(--brand-green);
+      border: 2px solid var(--brand-green);
+      background: white;
+    }
+    
+    @media (max-width: 600px) {
+      .topbar { height: 56px; padding: 0 0.8rem; }
+      #panoramaWrap { margin-top: 56px; height: calc(100vh - 56px); }
+      .ctrl-btn { width: 44px; height: 44px; }
+    }
+
+    /* --- MENÚ (MINIMALISTA) --- */
+    .offcanvas { 
+      width: 240px;       /* Menos ancho */
+      max-width: 80vw; 
+      border: none; 
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    
+    .offcanvas-header { 
+      background: #fff; 
+      border-bottom: none; 
+      padding: 1.5rem 1.5rem 1rem;
+    }
+
+    .offcanvas-body { 
+      padding: 0; 
+    }
+
+    /* Botones tipo lista simple */
+    .scene-btn {
+      display: block;       /* Bloque simple */
+      width: 100%;
+      padding: 12px 1.5rem; /* Espaciado vertical ligero */
+      background: transparent;
+      color: var(--text);
+      font-weight: 500;     /* Letras sutiles (no bold) */
+      font-size: 0.95rem;   /* Tamaño contenido */
+      text-align: left;
+      border: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .scene-btn:hover {
+      background: rgba(0,0,0,0.02); /* Hover casi imperceptible */
+    }
+
+    .scene-btn.active {
+      background: transparent;
+      color: var(--brand-green); /* Solo color verde */
+      font-weight: 600;          /* Ligeramente más marcado */
+    }
+
+    /* --- HOTSPOTS --- */
+    .custom-image-hotspot {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+    .custom-image-hotspot:hover { transform: scale(1.1); }
+    .custom-image-hotspot img {
+      width: 48px; height: 48px;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    .hotspot-label {
+      margin-top: 4px;
+      padding: 6px 10px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    
+    @media (max-width: 768px) {
+      .hotspot-label {
+        background: rgba(0,0,0,0.8);
+        color: white;
+      }
+    }
