@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubicación y Mapas</title>
+    <style>
+        :root {
+            --verde-udenar: #00612a;
+            --gris-fondo: #f5f5f5;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #ffffff;
+            /* Quitamos overflow hidden y height 100% para permitir scroll natural */
+        }
+
+        /* Contenedor general para dar aire al contenido */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* --- SECCIONES --- */
+        .section-block {
+            margin-bottom: 40px; /* Espacio entre secciones */
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee; /* Separador visual */
+        }
+
+        .section-block:last-child {
+            border-bottom: none; /* Sin borde en la última */
+        }
+
+        .section-title {
+            color: var(--verde-udenar);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .section-description {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        /* --- CONTENEDORES DE MEDIOS --- */
+        
+        /* Contenedor para Mapa y 360 (Altura fija para mejor visualización) */
+        .media-container {
+            width: 100%;
+            height: 450px; /* Altura ideal para visualización en escritorio */
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .media-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* Contenedor para la imagen del plano */
+        .image-container {
+            width: 100%;
+            text-align: center;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 800px; /* Limita la altura para que no sea infinita */
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
+            .media-container {
+                height: 300px; /* Más pequeña en móvil */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- 1. MAPA INTERACTIVO -->
+        <section class="section-block">
+            <h2 class="section-title">📍 Ubicación Física</h2>
+            <p class="section-description">Encuentra nuestras instalaciones en el mapa interactivo.</p>
+            <div class="media-container">
+                <!-- Reemplaza el src con tu iframe de Google Maps -->
+                <iframe 
+                    src="/ubicacion/" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
+            </div>
+        </section>
+
+        <!-- 2. PLANO DEL SITIO -->
+        <section class="section-block">
+            <h2 class="section-title">🗺️ Plano del Sitio</h2>
+            <p class="section-description">Diagrama general de las instalaciones y distribución de la sede.</p>
+            <div class="image-container">
+                <!-- Reemplaza src con tu imagen -->
+                <img src="MapaSitio.png" alt="Plano del Sitio Túquerres">
+            </div>
+        </section>
+
+        <!-- 3. VISTA 360 -->
+        <section class="section-block">
+            <h2 class="section-title">🌐 Recorrido Virtual 360°</h2>
+            <p class="section-description">Explora nuestras instalaciones de forma inmersiva. Haz clic y arrastra para mirar alrededor.</p>
+            <div class="media-container" style="height: 500px;"> <!-- Un poco más alto para el 360 -->
+                <iframe 
+                    src="360" 
+                    allowfullscreen="true" 
+                    webkitallowfullscreen="true" 
+                    mozallowfullscreen="true">
+                </iframe>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>

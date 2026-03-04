@@ -1,66 +1,314 @@
- <!doctype html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Inicio | Sede</title>
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"> <!-- [web:173] -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Sede Regional Túquerres - Universidad de Nariño</title>
 
   <style>
-    /* Solo un detalle opcional: efecto suave al pasar el mouse */
-    .tile{ transition: transform .12s ease; }
-    .tile:hover{ transform: translateY(-2px); }
+    :root{
+      --verde: #008f39;
+      --verde-oscuro: #00612a;
+      --gris-fondo: #f5f5f5;
+      --negro: #222222;
+      --borde-suave: #e0e0e0;
+    }
+
+    *{ box-sizing: border-box; margin: 0; padding: 0; }
+
+    body{
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--negro);
+      background-color: #ffffff;
+      height: 100vh; /* Altura total de la ventana */
+      overflow: hidden; /* No permitimos scroll en el body general */
+      display: flex;
+      flex-direction: column;
+    }
+
+    a{ color: inherit; text-decoration: none; }
+    img{ max-width: 100%; display: block; }
+
+    /* --- SCROLL ESTILIZADO --- */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: var(--verde); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--verde-oscuro); }
+
+    /* --- CABECERAS (No cambian) --- */
+    .gov-bar{
+      background: #00843d; color: #ffffff; font-size: 12px;
+      padding: 4px 16px; display: flex; justify-content: space-between;
+      flex-shrink: 0;
+      z-index: 100;
+    }
+    
+    header.site-header{ 
+      border-bottom: 1px solid var(--borde-suave); 
+      background: #ffffff; 
+      flex-shrink: 0;
+      z-index: 100;
+    }
+    .header-inner{
+      display: flex; align-items: center;
+      padding: 10px 16px; gap: 20px;
+    }
+    .brand-logo{ display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .brand-text{ font-size: 14px; line-height: 1.3; }
+    .brand-text strong{ display: block; font-size: 18px; }
+
+    nav.main-nav{ background: var(--verde-oscuro); color: #ffffff; flex-shrink: 0; z-index: 100; }
+    .main-nav-inner{
+      display: flex; align-items: center; padding: 0 16px;
+    }
+    .main-nav-inner a{ padding: 10px 14px; font-size: 14px; display: inline-flex; align-items: center; }
+    .main-nav-inner a:hover{ background: rgba(255,255,255,0.08); }
+    .main-nav-inner a.active{ background: #ffffff; color: var(--verde-oscuro); font-weight: 600; }
+    .main-nav-spacer{ flex: 1; }
+
+    .sede-banner{ background: #101010; color: #ffffff; padding: 8px 16px; flex-shrink: 0; z-index: 100; }
+    .sede-banner-inner{
+      display: flex; align-items: center;
+      gap: 14px; font-size: 16px; font-weight: 600;
+    }
+    .sede-icon{
+      height: 30px; width: 30px; border-radius: 50%; background: #ffffff;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--verde); font-weight: 700; font-size: 16px;
+    }
+
+    /* --- LAYOUT PRINCIPAL (FLEXBOX PURO) --- */
+    .layout-container {
+      display: flex;
+      flex: 1; /* Ocupa el espacio restante */
+      min-height: 0; /* CLAVE: Permite que los hijos gestionen el scroll */
+      overflow: hidden; /* El contenedor no scrollea, sus hijos sí */
+    }
+
+    /* Menú Lateral */
+    .sidebar-nav {
+      width: 250px;
+      background-color: #fff;
+      border-right: 1px solid var(--borde-suave);
+      flex-shrink: 0;
+      overflow-y: auto; /* Scroll si el menú es largo */
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-title {
+      background-color: transparent;
+      color: var(--verde-oscuro);
+      padding: 15px 20px;
+      font-size: 16px;
+      font-weight: 800;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--verde-oscuro);
+    }
+
+    .sidebar-nav ul { list-style: none; flex: 1; }
+    .sidebar-nav ul li a {
+      display: block; padding: 12px 20px; color: #333; font-size: 14px;
+      border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: 0.2s;
+    }
+    .sidebar-nav ul li a:hover { background-color: #e8f5e9; color: var(--verde-oscuro); }
+    .sidebar-nav ul li a.active-link { background-color: var(--verde); color: white; font-weight: bold; }
+
+    /* Área de Contenido Derecha */
+    .main-content-area {
+      flex: 1;
+      background: #fff;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 0; /* CLAVE: Permite la contracción */
+    }
+
+    /* --- SECCIONES DE CONTENIDO (SOLUCIÓN AL CORTE) --- */
+    .content-section { 
+      display: none; 
+      flex-direction: column; /* Alineación vertical */
+      height: 100%;
+      width: 100%;
+      overflow-y: auto; /* ¡AQUÍ APARECE EL SCROLL! */
+      overflow-x: hidden;
+    }
+    .content-section.active { 
+      display: flex; 
+      flex: 1; /* Ocupa todo el espacio disponible */
+    }
+
+    /* Wrapper para texto (Presentación) */
+    .content-wrapper {
+      padding: 30px;
+      /* No necesita height 100% porque el padre ya scrollea */
+    }
+    .section-title{
+      text-align: left; font-size: 22px; margin-bottom: 20px; font-weight: 700;
+      border-bottom: 2px solid var(--verde); padding-bottom: 10px; color: var(--verde-oscuro);
+    }
+    .presentacion-grid{ display: grid; grid-template-columns: 1fr; gap: 20px; }
+    .director-card{ display: flex; gap: 20px; align-items: center; background: #f9f9f9; padding: 15px; border-radius: 8px; }
+    .director-photo{ width: 80px; height: 100px; background: #ddd; overflow: hidden; }
+
+    /* --- IFRAME (SIN OVERFLOW HIDDEN) --- */
+    .iframe-container {
+      width: 100%;
+      height: 100%; /* Intenta ocupar todo, pero el padre controla el scroll */
+      border: none;
+      display: block;
+      flex-shrink: 0; /* Evita que el iframe se encoja si el contenido es pequeño */
+      /* Quitamos overflow: hidden para no bloquear scroll interno del iframe */
+    }
+
+    /* Footer */
+    footer.site-footer{ 
+      background: #111111; 
+      color: #e0e0e0; 
+      font-size: 11px; 
+      padding: 10px 16px;
+      border-top: 1px solid #333;
+      flex-shrink: 0;
+      z-index: 100;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .layout-container { flex-direction: column; height: auto; overflow-y: auto; min-height: auto; }
+      .sidebar-nav { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #ddd; }
+      .sidebar-nav ul { display: flex; flex-wrap: wrap; }
+      .sidebar-nav ul li { flex: 1 0 50%; }
+      
+      .main-content-area { height: 600px; }
+      .content-section { height: 100%; }
+    }
   </style>
 </head>
+<body>
 
-<body class="bg-white">
-  <main class="container py-5">
-    <header class="mb-4">
-      <h1 class="h3 mb-1">Portal de la Sede</h1>
-      <p class="text-secondary mb-0">Selecciona una sección para ingresar.</p>
-    </header>
+  <!-- CABECERA -->
+  <div style="flex-shrink: 0; display: flex; flex-direction: column;">
+    <div class="gov-bar">
+      <div class="gov-bar-left"><span>GOV.CO</span></div>
+      <div class="gov-bar-right"><a href="#">Correo institucional</a><span>🔒</span></div>
+    </div>
 
-    <nav aria-label="Secciones">
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
-        <div class="col">
-          <a class="tile btn btn-success w-100 text-start p-4 rounded-4" href="./360/" aria-label="Ingresar a Recorrido 360">
-            <div class="fw-bold">Recorrido 360</div>
-            <div class="small opacity-75 mt-1">360°</div>
-          </a>
-        </div>
-
-        <div class="col">
-          <a class="tile btn btn-success w-100 text-start p-4 rounded-4" href="./historia/" aria-label="Ingresar a Historia">
-            <div class="fw-bold">Historia</div>
-            <div class="small opacity-75 mt-1">📜</div>
-          </a>
-        </div>
-
-        <div class="col">
-          <a class="tile btn btn-success w-100 text-start p-4 rounded-4" href="./organigrama/" aria-label="Ingresar a Organigrama">
-            <div class="fw-bold">Organigrama</div>
-            <div class="small opacity-75 mt-1">🏛️</div>
-          </a>
-        </div>
-
-        <div class="col">
-          <a class="tile btn btn-success w-100 text-start p-4 rounded-4" href="./bienestar/" aria-label="Ingresar a Bienestar">
-            <div class="fw-bold">Bienestar</div>
-            <div class="small opacity-75 mt-1">🤝</div>
-          </a>
-        </div>
-
-        <div class="col">
-          <a class="tile btn btn-success w-100 text-start p-4 rounded-4" href="./ubicacion/" aria-label="Ingresar a Ubicación">
-            <div class="fw-bold">Ubicación</div>
-            <div class="small opacity-75 mt-1">📍</div>
-          </a>
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="brand-logo" onclick="loadPage('presentacion')">
+          <div style="width:60px; height:60px; background:#00612a; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">UDENAR</div>
+          <div class="brand-text"><strong>Universidad de Nariño</strong>COLOMBIA</div>
         </div>
       </div>
-    </nav>
-  </main>
+      <nav class="main-nav">
+        <div class="main-nav-inner">
+          <a href="#" onclick="loadPage('presentacion')">Inicio</a>
+          <a href="#">Sobre Regionalización</a>
+          <a href="#">Ipiales</a>
+          <a href="#">Tumaco</a>
+          <a href="#" class="active">Túquerres</a>
+          <a href="#">La Unión</a>
+          <div class="main-nav-spacer"></div>
+        </div>
+      </nav>
+    </header>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> <!-- [web:173] -->
+    <div class="sede-banner">
+      <div class="sede-banner-inner">
+        <div class="sede-icon">☘</div>
+        <div>SEDE REGIONAL TÚQUERRES</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUERPO PRINCIPAL -->
+  <div class="layout-container">
+    
+    <!-- MENÚ LATERAL -->
+    <aside class="sidebar-nav">
+      <div class="sidebar-title">Sobre la Extensión</div>
+      <ul>
+        <li><a onclick="loadPage('historia')">Reseña Histórica</a></li>
+        <li><a onclick="loadPage('organigrama')">Organigrama</a></li>
+        <li><a onclick="loadPage('ubicacion')">Ubicación y Mapas</a></li>
+        <li><a onclick="loadPage('bienestar')">Bienestar</a></li>
+      </ul>
+    </aside>
+
+    <!-- ÁREA DE CONTENIDO -->
+    <main class="main-content-area">
+      
+      <!-- 1. PRESENTACIÓN -->
+      <div id="page-presentacion" class="content-section active">
+        <div class="content-wrapper">
+          <h2 class="section-title">Presentación</h2>
+          <div class="presentacion-grid">
+            <div>
+              <p style="text-align: justify; margin-bottom: 20px;">
+                La Universidad de Nariño Extensión Túquerres comienza sus labores académicas para el semestre B de 1996 con cerca de cien estudiantes matriculados en los programas de Ingeniería de Sistemas modalidad presencial y Licenciatura en Educación Básica con énfasis en ciencias naturales y medio ambiente modalidad semipresencial.
+              </p>
+              <div class="director-card">
+                <div class="director-photo"><div style="width:100%; height:100%; background:#ccc;"></div></div>
+                <div>
+                  <div style="font-weight: bold; font-size: 16px;">Alejandro Marcelo Rodríguez Eraso</div>
+                  <div style="font-size: 13px; color: #555;">Director Sede Regional Túquerres</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. RESEÑA HISTÓRICA -->
+      <div id="page-historia" class="content-section">
+        <iframe src="/historia" class="iframe-container" allowfullscreen></iframe>
+      </div>
+
+      <!-- 3. ORGANIGRAMA -->
+      <div id="page-organigrama" class="content-section">
+        <iframe src="/organigrama" class="iframe-container" allowfullscreen></iframe>
+      </div>
+
+      <!-- 4. UBICACIÓN Y MAPAS -->
+      <div id="page-ubicacion" class="content-section">
+        <iframe src="ubicacion.html" class="iframe-container" allowfullscreen></iframe>
+      </div>
+
+      <!-- 5. BIENESTAR -->
+      <div id="page-bienestar" class="content-section">
+        <iframe src="/bienestar" class="iframe-container" allowfullscreen></iframe>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div>© 2026 Universidad de Nariño. Todos los derechos reservados.</div>
+  </footer>
+
+  <script>
+    function loadPage(pageId) {
+      var sections = document.querySelectorAll('.content-section');
+      sections.forEach(function(section) {
+        section.classList.remove('active');
+      });
+
+      var target = 'page-' + pageId;
+      var selectedSection = document.getElementById(target);
+      if (selectedSection) {
+        selectedSection.classList.add('active');
+      }
+
+      var links = document.querySelectorAll('.sidebar-nav ul li a');
+      links.forEach(function(link) {
+        link.classList.remove('active-link');
+      });
+      
+      if(event.currentTarget && pageId !== 'presentacion') {
+          event.currentTarget.classList.add('active-link');
+      }
+    }
+  </script>
 </body>
 </html>
