@@ -126,7 +126,7 @@
       background-size: cover;
       background-position: center;
       backdrop-filter: blur(8px);
-      padding: 20px;
+      padding: 18px;
       transition: opacity 0.4s ease;
     }
     body:not(.welcome-visible) #welcome { display: none; }
@@ -135,12 +135,12 @@
       width: min(440px, 90vw);
       border-radius: 24px;
       background: white;
-      padding: 40px;
+      padding: 20px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.2);
       text-align: center;
     }
-    .welcome-hero h1 { margin: 16px 0 8px; font-size: 1.8rem; font-weight: 800; }
-    .welcome-hero p { color: var(--muted); font-weight: 600; margin-bottom: 24px; }
+    .welcome-hero h1 { margin: 16px 0 8px; font-size: 1rem; font-weight: 550; }
+    .welcome-hero p { color: var(--muted); font-weight: 350; margin-bottom: 24px; }
 
     .btn-enter {
       border-radius: 50px;
@@ -191,7 +191,7 @@
     }
 
     .ctrl-btn {
-      width: 48px; height: 48px;
+      width: 40px; height: 40px;
       border-radius: 50%;
       background: white;
       display: grid; place-items: center;
@@ -267,7 +267,7 @@
     }
     .custom-image-hotspot:hover { transform: scale(1.1); }
     .custom-image-hotspot img {
-      width: 48px; height: 48px;
+      width: 40px; height: 40px;
       filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
       animation: pulse 2s infinite;
     }
