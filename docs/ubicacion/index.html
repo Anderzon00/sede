@@ -1,128 +1,151 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ubicación – Sede Regional Túquerres</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubicación y Mapas</title>
+    <style>
+        :root {
+            --verde-udenar: #00612a;
+            --gris-fondo: #f5f5f5;
+        }
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #ffffff;
+            /* Quitamos overflow hidden y height 100% para permitir scroll natural */
+        }
 
-  <style>
-    *{ box-sizing:border-box; }
+        /* Contenedor general para dar aire al contenido */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-    :root{
-      --gutter: clamp(16px, 4vw, 24px);
-      --radius: 12px;
-      --border: 1px solid #e6e6e6;
-      --green: #00923F;
-    }
+        /* --- SECCIONES --- */
+        .section-block {
+            margin-bottom: 40px; /* Espacio entre secciones */
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee; /* Separador visual */
+        }
 
-    body{
-      font-family: Arial, Helvetica, sans-serif;
-      margin: 0;
-      line-height: 1.4;
-      color: #1a1a1a;
-      background: #fdfdfd;
-    }
+        .section-block:last-child {
+            border-bottom: none; /* Sin borde en la última */
+        }
 
-    .udenar-container{
-       margin: 20px auto;
-      padding: 16px var(--gutter);
-      width: 100%;
-    }
+        .section-title {
+            color: var(--verde-udenar);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
 
-    .udenar-card{
-      border: var(--border);
-      border-radius: var(--radius);
-      overflow: hidden; 
-      background: #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    } 
+        .section-description {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
 
-    .udenar-card__header{
-      background: var(--green);
-      color: #fff;
-      padding: 18px var(--gutter);
-    }
+        /* --- CONTENEDORES DE MEDIOS --- */
+        
+        /* Contenedor para Mapa y 360 (Altura fija para mejor visualización) */
+        .media-container {
+            width: 100%;
+            height: 450px; /* Altura ideal para visualización en escritorio */
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
 
-    .udenar-card__title{
-      margin: 0;
-      font-size: clamp(18px, 4.6vw, 24px);
-      font-weight: bold;
-    }
+        .media-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
 
-    .udenar-card__body{
-      padding: 16px var(--gutter);
-    }
+        /* Contenedor para la imagen del plano */
+        .image-container {
+            width: 100%;
+            text-align: center;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
 
-    /* Contenedor del mapa */
-    #map-leaflet {
-      width: 100%;
-      height: 450px;
-      border-radius: 8px;
-      background: #f2f2f2;
-      border: var(--border);
-      z-index: 1;
-    }
+        .image-container img {
+            max-width: 100%;
+            max-height: 800px; /* Limita la altura para que no sea infinita */
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
 
-    /* Estilo para el texto dentro del popup */
-    .leaflet-popup-content b {
-      color: var(--green);
-    }
-
-    @media (max-width: 480px){
-      #map-leaflet { height: 320px; }
-    }
-  </style>
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
+            .media-container {
+                height: 300px; /* Más pequeña en móvil */
+            }
+        }
+    </style>
 </head>
-
 <body>
-  <main class="udenar-container">
-    <section class="udenar-card">
-      <div class="udenar-card__header">
-        <h2 class="udenar-card__title">Ubicación – Sede Regional Túquerres</h2>
-      </div>
 
-      <div class="udenar-card__body">
-        <p style="margin-bottom: 15px;">
-          <strong>Dirección:</strong> Calle 24 No. 13B – 62, Barrio La Reconstrucción, Túquerres
-        </p>
+    <div class="container">
+        
+        <!-- 1. MAPA INTERACTIVO -->
+        <section class="section-block">
+            <h2 class="section-title">Ubicación</h2>
+            <p class="section-description"> Calle 24 No. 13B – 62 Barrio la Reconstrucción. Túquerres – Nariño – Colombia.</p>
+           
 
-        <div id="map-leaflet"></div>
-      </div>
-    </section>
-  </main>
+ <div class="media-container">
+                <!-- Reemplaza el src con tu iframe de Google Maps -->
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d592.9840532509655!2d-77.6167015158015!3d1.0832113045409055!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sco!4v1772686505952!5m2!1ses-419!2sco" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
+                
+            </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <script>
-    // 1. Coordenadas Sede Túquerres
-    const lat = 1.083059774057794; 
-    const lng = -77.61664330959321;
 
-    // 2. Configurar el Icono Verde de Escuela
-    const escuelaVerdeIcon = L.icon({
-        // URL de un icono de escuela verde similar al de Flaticon
-        iconUrl: 'school.png', 
-        iconSize: [45, 45], // Tamaño un poco más grande para resaltar
-        iconAnchor: [22, 45], // Ajuste del punto de apoyo
-        popupAnchor: [0, -45] // Ajuste del globo de información
-    });
+        </section>
 
-    // 3. Inicializar el mapa
-    const map = L.map('map-leaflet').setView([lat, lng], 22);
+        <!-- 2. PLANO DEL SITIO -->
+        <section class="section-block">
+            <h2 class="section-title">Mapa del Sitio</h2>
+            <p class="section-description">Diagrama general de las instalaciones y distribución de la sede.</p>
+            <div class="image-container">
+                <!-- Reemplaza src con tu imagen -->
+                <img src="MapaSitio.png" alt="Plano del Sitio Túquerres">
+            </div>
+        </section>
 
-    // Capa de mapa (OpenStreetMap)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap'
-    }).addTo(map);
+        <!-- 3. VISTA 360 -->
+        <section class="section-block">
+            <h2 class="section-title">Recorrido Virtual 360°</h2>
+            <p class="section-description">Explora nuestras instalaciones de forma inmersiva. Haz clic y arrastra para mirar alrededor.</p>
+            <div class="media-container" style="height: 500px;"> <!-- Un poco más alto para el 360 -->
+                <iframe 
+                    src="/360" 
+                    allowfullscreen="true" 
+                    webkitallowfullscreen="true" 
+                    mozallowfullscreen="true">
+                </iframe>
+            </div>
+        </section>
 
-    // 4. Añadir marcador con el nuevo icono
-    const marker = L.marker([lat, lng], { icon: escuelaVerdeIcon }).addTo(map);
-    
-    // 5. Vincular el nombre de la institución
-    marker.bindPopup("<b>Sede Regional Túquerres</b><br>Universidad de Nariño")
-          .openPopup();
-  </script>
+    </div>
+
 </body>
 </html>

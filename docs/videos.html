@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galería de Videos</title>
+  <style>
+    :root {
+      --verde: #008f39;
+      --verde-oscuro: #00612a;
+      --verde-claro: #e8f5e9;
+      --gris-fondo: #f4f6f8;
+      --yt-red: #FF0000; /* Color YouTube */
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #222;
+      background-color: var(--gris-fondo);
+      line-height: 1.6;
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: var(--verde); border-radius: 10px; }
+
+    /* --- HEADER (HERO) --- */
+    .hero-section {
+      background: linear-gradient(135deg, var(--verde-oscuro) 0%, var(--verde) 100%);
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border-radius: 0 0 40px 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    /* Efecto decorativo */
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+      animation: rotate 30s linear infinite;
+    }
+
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero-section h1 {
+      font-size: 38px;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .hero-section p {
+      opacity: 0.95;
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* --- CONTENIDO PRINCIPAL --- */
+    .content-wrapper {
+      padding: 40px 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .intro-text {
+      text-align: center;
+      margin-bottom: 40px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .intro-text p { color: #555; font-size: 16px; }
+
+    /* --- GRID VIDEOS VERTICALES --- */
+    .videos-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 60px; /* Espacio antes de la sección de YouTube */
+    }
+
+    .video-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      width: 100%; 
+      max-width: 340px; /* Tamaño ideal para vertical en escritorio */
+      display: flex;
+      flex-direction: column;
+    }
+
+    .video-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    }
+
+    /* Contenedor Video Vertical 9:16 */
+    .video-container {
+      position: relative;
+      width: 100%;
+      padding-top: 177.78%; /* Proporción vertical */
+      background: #000;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .video-info {
+      padding: 20px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .video-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--verde-oscuro);
+      margin-bottom: 8px;
+      line-height: 1.4;
+      flex-grow: 1;
+    }
+
+    .video-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid #f0f0f0;
+      margin-top: 15px;
+    }
+
+    .video-date {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .video-tag {
+      background: var(--verde-claro);
+      color: var(--verde-oscuro);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 15px;
+      font-weight: 500;
+    }
+
+    /* --- SECCIÓN YouTube (DEBAJO DE VIDEOS) --- */
+    .youtube-promo {
+      background: white;
+      border-radius: 20px;
+      padding: 40px 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      border: 1px solid #eee;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Icono grande de fondo decorativo */
+    .youtube-promo::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f0f0f0'%3E%3Cpath d='M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 300px;
+      opacity: 0.1;
+      z-index: 0;
+    }
+
+    .youtube-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .youtube-promo h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .youtube-promo p {
+      color: #666;
+      margin-bottom: 25px;
+      font-size: 15px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-youtube {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--yt-red);
+      color: white;
+      padding: 14px 35px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+      font-size: 16px;
+    }
+
+    .btn-youtube:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
+      background: #cc0000;
+    }
+
+    .btn-youtube svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-section { padding: 40px 20px; }
+      .hero-section h1 { font-size: 28px; }
+      .video-card { max-width: 100%; }
+      .youtube-promo { padding: 30px 15px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER DE BIENVENIDA -->
+  <header class="hero-section">
+    <div class="hero-content">
+      <h1>🎬 Galería de Videos</h1>
+      <p>resúmenes visuales.</p>
+    </div>
+  </header>
+
+  <div class="content-wrapper">
+    
+    <div class="intro-text">
+      <p>Cada audiovisual refleja nuestro compromiso con la educación y el desarrollo de la región. Navega por nuestra galería de contenido.</p>
+    </div>
+
+    <!-- GRID DE VIDEOS VERTICALES -->
+    <div class="videos-grid">
+      
+      <!-- Video 1 -->
+      <article class="video-card">
+        <div class="video-container">
+          <iframe src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F908077505237834%2F&show_text=false&width=267&t=0" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+        </div>
+        <div class="video-info">
+          <h3 class="video-title">Infraestructura, Fortalecimiento de programas e Interacción Social</h3>
+          <div class="video-meta">
+            <span class="video-date">📅 Dic 2025</span>
+            <span class="video-tag">Institucional</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Video 2 -->
+      <article class="video-card">
+        <div class="video-container">
+          <iframe src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1558817248576629%2F&show_text=false&width=267&t=0" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+        </div>
+        <div class="video-info">
+          <h3 class="video-title">Fortalecimiento de Bienestar Universitario y Deporte</h3>
+          <div class="video-meta">
+            <span class="video-date">📅 Dic 2025</span>
+            <span class="video-tag">Bienestar</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Video 3 -->
+      <article class="video-card">
+        <div class="video-container">
+          <iframe src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F733502009367604%2F&show_text=false&width=267&t=0" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+        </div>
+        <div class="video-info">
+          <h3 class="video-title">Avances, Logros y Desarrollo Institucional</h3>
+          <div class="video-meta">
+            <span class="video-date">📅 Dic 2025</span>
+            <span class="video-tag">Logros</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- SECCIÓN "VER MÁS" PARA YOUTUBE -->
+    <section class="youtube-promo">
+      <div class="youtube-content">
+        <h2>Home Studio</h2>
+        <p>Encuentra videos de las producciones realizadas en el Home Studio en nuestro canal oficial de YouTube.</p>
+        <a href="https://www.youtube.com/@homeestudio894" target="_blank" class="btn-youtube">
+          <!-- Icono de YouTube SVG -->
+          <svg viewBox="0 0 24 24">
+            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+          </svg>
+          Ver más en YouTube
+        </a>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>
