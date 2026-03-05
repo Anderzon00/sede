@@ -20,8 +20,8 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       color: var(--negro);
       background-color: #ffffff;
-      height: 100vh; /* Altura total de la ventana */
-      overflow: hidden; /* No permitimos scroll en el body general */
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
     }
@@ -35,7 +35,7 @@
     ::-webkit-scrollbar-thumb { background: var(--verde); border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--verde-oscuro); }
 
-    /* --- CABECERAS (No cambian) --- */
+    /* --- CABECERAS --- */
     .gov-bar{
       background: #00843d; color: #ffffff; font-size: 12px;
       padding: 4px 16px; display: flex; justify-content: space-between;
@@ -61,7 +61,7 @@
     .main-nav-inner{
       display: flex; align-items: center; padding: 0 16px;
     }
-    .main-nav-inner a{ padding: 10px 14px; font-size: 14px; display: inline-flex; align-items: center; }
+    .main-nav-inner a{ padding: 10px 14px; font-size: 14px; display: inline-flex; align-items: center; cursor: pointer; }
     .main-nav-inner a:hover{ background: rgba(255,255,255,0.08); }
     .main-nav-inner a.active{ background: #ffffff; color: var(--verde-oscuro); font-weight: 600; }
     .main-nav-spacer{ flex: 1; }
@@ -77,12 +77,12 @@
       color: var(--verde); font-weight: 700; font-size: 16px;
     }
 
-    /* --- LAYOUT PRINCIPAL (FLEXBOX PURO) --- */
+    /* --- LAYOUT PRINCIPAL --- */
     .layout-container {
       display: flex;
-      flex: 1; /* Ocupa el espacio restante */
-      min-height: 0; /* CLAVE: Permite que los hijos gestionen el scroll */
-      overflow: hidden; /* El contenedor no scrollea, sus hijos sí */
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
     }
 
     /* Menú Lateral */
@@ -91,7 +91,7 @@
       background-color: #fff;
       border-right: 1px solid var(--borde-suave);
       flex-shrink: 0;
-      overflow-y: auto; /* Scroll si el menú es largo */
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
     }
@@ -114,34 +114,33 @@
     .sidebar-nav ul li a:hover { background-color: #e8f5e9; color: var(--verde-oscuro); }
     .sidebar-nav ul li a.active-link { background-color: var(--verde); color: white; font-weight: bold; }
 
-    /* Área de Contenido Derecha */
+    /* Área de Contenido */
     .main-content-area {
       flex: 1;
       background: #fff;
       position: relative;
-      display: flex;
-      flex-direction: column;
-      min-height: 0; /* CLAVE: Permite la contracción */
+      min-height: 0;
+      overflow: hidden;
     }
 
-    /* --- SECCIONES DE CONTENIDO (SOLUCIÓN AL CORTE) --- */
+    /* --- SECCIONES DE CONTENIDO (SOLUCIÓN IFRAMES) --- */
     .content-section { 
-      display: none; 
-      flex-direction: column; /* Alineación vertical */
-      height: 100%;
-      width: 100%;
-      overflow-y: auto; /* ¡AQUÍ APARECE EL SCROLL! */
-      overflow-x: hidden;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: none;
     }
     .content-section.active { 
-      display: flex; 
-      flex: 1; /* Ocupa todo el espacio disponible */
+      display: block;
     }
 
     /* Wrapper para texto (Presentación) */
     .content-wrapper {
       padding: 30px;
-      /* No necesita height 100% porque el padre ya scrollea */
+      height: 100%;
+      overflow-y: auto;
     }
     .section-title{
       text-align: left; font-size: 22px; margin-bottom: 20px; font-weight: 700;
@@ -149,16 +148,14 @@
     }
     .presentacion-grid{ display: grid; grid-template-columns: 1fr; gap: 20px; }
     .director-card{ display: flex; gap: 20px; align-items: center; background: #f9f9f9; padding: 15px; border-radius: 8px; }
-    .director-photo{ width: 80px; height: 100px; background: #ddd; overflow: hidden; }
+    .director-photo{ width: 80px; height: 100px; background: #ddd; overflow: hidden; border-radius: 4px; }
 
-    /* --- IFRAME (SIN OVERFLOW HIDDEN) --- */
+    /* --- IFRAME CORREGIDO --- */
     .iframe-container {
       width: 100%;
-      height: 100%; /* Intenta ocupar todo, pero el padre controla el scroll */
+      height: 100%;
       border: none;
       display: block;
-      flex-shrink: 0; /* Evita que el iframe se encoja si el contenido es pequeño */
-      /* Quitamos overflow: hidden para no bloquear scroll interno del iframe */
     }
 
     /* Footer */
@@ -179,8 +176,8 @@
       .sidebar-nav ul { display: flex; flex-wrap: wrap; }
       .sidebar-nav ul li { flex: 1 0 50%; }
       
-      .main-content-area { height: 600px; }
-      .content-section { height: 100%; }
+      .main-content-area { height: 500px; position: relative; }
+      .content-section { position: absolute; }
     }
   </style>
 </head>
@@ -202,12 +199,12 @@
       </div>
       <nav class="main-nav">
         <div class="main-nav-inner">
-          <a href="#" onclick="loadPage('presentacion')">Inicio</a>
-          <a href="#">Sobre Regionalización</a>
-          <a href="#">Ipiales</a>
-          <a href="#">Tumaco</a>
-          <a href="#" class="active">Túquerres</a>
-          <a href="#">La Unión</a>
+          <a onclick="loadPage('presentacion')">Inicio</a>
+          <a>Sobre Regionalización</a>
+          <a>Ipiales</a>
+          <a>Tumaco</a>
+          <a class="active">Túquerres</a>
+          <a>La Unión</a>
           <div class="main-nav-spacer"></div>
         </div>
       </nav>
@@ -228,6 +225,7 @@
     <aside class="sidebar-nav">
       <div class="sidebar-title">Sobre la Extensión</div>
       <ul>
+        <li><a onclick="loadPage('presentacion')">Presentación</a></li>
         <li><a onclick="loadPage('historia')">Reseña Histórica</a></li>
         <li><a onclick="loadPage('organigrama')">Organigrama</a></li>
         <li><a onclick="loadPage('ubicacion')">Ubicación y Mapas</a></li>
@@ -247,8 +245,13 @@
               <p style="text-align: justify; margin-bottom: 20px;">
                 La Universidad de Nariño Extensión Túquerres comienza sus labores académicas para el semestre B de 1996 con cerca de cien estudiantes matriculados en los programas de Ingeniería de Sistemas modalidad presencial y Licenciatura en Educación Básica con énfasis en ciencias naturales y medio ambiente modalidad semipresencial.
               </p>
+              <p style="text-align: justify; margin-bottom: 20px;">
+                Desde entonces, la sede ha crecido significativamente, ampliando su oferta académica y fortaleciendo su compromiso con el desarrollo educativo de la región norte del departamento de Nariño.
+              </p>
               <div class="director-card">
-                <div class="director-photo"><div style="width:100%; height:100%; background:#ccc;"></div></div>
+                <div class="director-photo">
+                  <div style="width:100%; height:100%; background: linear-gradient(135deg, #ccc 0%, #999 100%); display: flex; align-items: center; justify-content: center; color: #666; font-size: 10px;">FOTO</div>
+                </div>
                 <div>
                   <div style="font-weight: bold; font-size: 16px;">Alejandro Marcelo Rodríguez Eraso</div>
                   <div style="font-size: 13px; color: #555;">Director Sede Regional Túquerres</div>
@@ -276,7 +279,7 @@
 
       <!-- 5. BIENESTAR -->
       <div id="page-bienestar" class="content-section">
-        <iframe src="bienestar" class="iframe-container" allowfullscreen></iframe>
+        <iframe src="bienestar/index.html" class="iframe-container" allowfullscreen></iframe>
       </div>
 
     </main>
@@ -289,25 +292,31 @@
 
   <script>
     function loadPage(pageId) {
+      // Ocultar todas las secciones
       var sections = document.querySelectorAll('.content-section');
       sections.forEach(function(section) {
         section.classList.remove('active');
       });
 
+      // Mostrar la sección seleccionada
       var target = 'page-' + pageId;
       var selectedSection = document.getElementById(target);
       if (selectedSection) {
         selectedSection.classList.add('active');
       }
 
+      // Actualizar enlaces activos del sidebar
       var links = document.querySelectorAll('.sidebar-nav ul li a');
       links.forEach(function(link) {
         link.classList.remove('active-link');
       });
       
-      if(event.currentTarget && pageId !== 'presentacion') {
-          event.currentTarget.classList.add('active-link');
-      }
+      // Encontrar y activar el enlace correspondiente
+      links.forEach(function(link) {
+        if(link.getAttribute('onclick') && link.getAttribute('onclick').indexOf(pageId) !== -1) {
+          link.classList.add('active-link');
+        }
+      });
     }
   </script>
 </body>
