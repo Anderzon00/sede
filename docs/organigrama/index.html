@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>Organigrama Interactivo - Zoom con navegación total</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organigrama Interactivo</title>
     <style>
         * {
             margin: 0;
@@ -13,298 +13,248 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f1f1;
-            display: flex;
-            flex-direction: column;
+            background-color: #ffffff;
             height: 100vh;
             overflow: hidden;
         }
 
-        .image-wrapper {
-            flex: 1;
+        .viewer {
             width: 100%;
-            overflow: auto;
+            height: 100%;
+            overflow: hidden;
             position: relative;
-            background-color: #f0efef;
             cursor: grab;
-            touch-action: pan-x pan-y;
-            -webkit-overflow-scrolling: touch;
         }
 
-        .image-wrapper:active {
+        .viewer.dragging {
             cursor: grabbing;
         }
 
-        .image-wrapper img {
-            display: block;
-            width: 100%;  /* El ancho se controlará por JS */
-            height: auto;
-            transition: width 0.1s ease; /* Suaviza el cambio de zoom */
-            pointer-events: all;
+        .viewer img {
+            position: absolute;
+            max-width: 95vw;
+            max-height: 95vh;
+            left: 50%;
+            top: 20px;
+            transform: translateX(-50%) scale(1);
+            transform-origin: center top;
             user-select: none;
             -webkit-user-drag: none;
+            pointer-events: none;
         }
 
-        /* Barra de controles flotante */
-        .controls-bar {
+        .controls {
             position: fixed;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(30, 30, 30, 0.85);
-            backdrop-filter: blur(8px);
-            border-radius: 50px;
+            background: white;
+            border-radius: 25px;
             padding: 10px 20px;
             display: flex;
             align-items: center;
-            gap: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            z-index: 1000;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
+            gap: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.15);
+            border: 1px solid #ddd;
+            z-index: 100;
         }
 
-        .slider-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .slider-container label {
-            font-size: 14px;
-            color: #ddd;
-            font-weight: bold;
-        }
-
-        .slider-container input[type=range] {
-            width: 200px;
-            height: 5px;
-            -webkit-appearance: none;
-            background: linear-gradient(90deg, hsl(134, 90%, 20%) 0%, #067d20 50%, #067216 50%);
-            border-radius: 10px;
-            outline: none;
-        }
-
-        .slider-container input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background: white;
-            border: 2px solid #00923F;
+        .btn {
+            width: 32px;
+            height: 32px;
+            border: none;
             border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }
-
-        .slider-container input[type=range]::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            background: white;
-            border: 2px solid #00923F;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .zoom-value {
-            min-width: 55px;
-            text-align: center;
-            font-weight: bold;
-            color: #00923F;
-            font-size: 16px;
-            background: rgba(237, 233, 233, 0.838);
-            padding: 4px 8px;
-            border-radius: 20px;
-        }
-
-        .reset-btn {
-            background:#00923F;
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            border-radius: 30px;
-            padding: 6px 16px;
-            font-size: 14px;
+            background: #f0f0f0;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: background 0.2s;
-            font-weight: bold;
         }
 
-        .reset-btn:hover {
+        .btn:hover {
             background: #00923F;
+            color: white;
         }
 
-        
+        input[type=range] {
+            width: 120px;
+            height: 5px;
+            -webkit-appearance: none;
+            background: #ddd;
+            border-radius: 5px;
+        }
 
-        
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #00923F;
+            border-radius: 50%;
+            cursor: pointer;
+        }
 
-        @media (max-width: 600px) {
-            .controls-bar {
-                padding: 8px 15px;
-                gap: 10px;
-                bottom: 15px;
-            }
-            .slider-container input[type=range] {
-                width: 120px;
-            }
-           
+        .percent {
+            background: #00923F;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .reset {
+            background: transparent;
+            border: 1px solid #00923F;
+            color: #00923F;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reset:hover {
+            background: #00923F;
+            color: white;
+        }
+
+        .hint {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,146,63,0.9);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            z-index: 100;
         }
     </style>
 </head>
 <body>
-    <div class="image-wrapper" id="imageWrapper">
-        <!-- Imagen de ejemplo (reemplazar con la ruta del organigrama real) -->
-        <img src="imagen.png" 
-             alt="Organigrama" 
-             id="zoomImage"
-             loading="lazy">
+    <div class="viewer" id="viewer">
+        <img src="imagen.png" alt="Organigrama" id="img">
     </div>
 
-    <div class="controls-bar">
-        <div class="slider-container">
-            <label>🔍</label>
-            <input type="range" id="zoomSlider" min="1" max="4" step="0.01" value="1">
-            <span class="zoom-value" id="zoomPercent">100%</span>
-        </div>
-        <button class="reset-btn" id="zoomReset">⟲ Restablecer</button>
-    </div>
 
-    
+    <div class="controls">
+        <button class="btn" id="out">−</button>
+        <input type="range" id="slider" min="0.5" max="3" step="0.1" value="1">
+        <button class="btn" id="in">+</button>
+        <span class="percent" id="percent">100%</span>
+        <button class="reset" id="reset">⟲ Reset</button>
+    </div>
 
     <script>
-        (function() {
-            const wrapper = document.getElementById('imageWrapper');
-            const image = document.getElementById('zoomImage');
-            const slider = document.getElementById('zoomSlider');
-            const zoomPercent = document.getElementById('zoomPercent');
+        const viewer = document.getElementById('viewer');
+        const img = document.getElementById('img');
+        const slider = document.getElementById('slider');
+        const percent = document.getElementById('percent');
 
-            let scale = 1;
-            const minScale = 1;
-            const maxScale = 4;
+        let scale = 1;
+        let posX = 0;
+        let posY = 0;
+        let dragging = false;
+        let startX, startY;
 
-            // Variables para arrastre
-            let isDragging = false;
-            let startX, startY;
-            let scrollLeft, scrollTop;
+        // Actualizar imagen
+        function update() {
+            img.style.transform = `translateX(calc(-50% + ${posX}px)) translateY(${posY}px) scale(${scale})`;
+            slider.value = scale;
+            percent.textContent = Math.round(scale * 100) + '%';
+        }
 
-            // Función para actualizar el zoom cambiando el ANCHO de la imagen
-            function setScale(newScale) {
-                scale = Math.min(Math.max(newScale, minScale), maxScale);
-                // Aplicar el ancho en porcentaje respecto al contenedor
-                image.style.width = (scale * 100) + '%';
-                
-                // Actualizar slider y porcentaje
-                slider.value = scale.toFixed(2);
-                zoomPercent.textContent = Math.round(scale * 100) + '%';
+        // Zoom desde el centro
+        function setZoom(val) {
+            scale = Math.min(Math.max(val, 0.5), 3);
+            update();
+        }
 
-                // Actualizar el color del slider
-                const percent = (scale - minScale) / (maxScale - minScale) * 100;
-                slider.style.background = `linear-gradient(90deg, #4a9eff 0%, #4a9eff ${percent}%, #555 ${percent}%)`;
+        slider.oninput = e => setZoom(+e.target.value);
+        document.getElementById('in').onclick = () => setZoom(scale + 0.2);
+        document.getElementById('out').onclick = () => setZoom(scale - 0.2);
+        
+        document.getElementById('reset').onclick = () => { 
+            scale = 1; 
+            posX = 0;
+            posY = 0; 
+            update(); 
+        };
+
+        // Zoom con rueda - desde el centro
+        viewer.addEventListener('wheel', e => {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -0.15 : 0.15;
+            setZoom(scale + delta);
+        }, { passive: false });
+
+        // Arrastrar
+        viewer.addEventListener('mousedown', e => {
+            dragging = true;
+            startX = e.clientX - posX;
+            startY = e.clientY - posY;
+            viewer.classList.add('dragging');
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', e => {
+            if (!dragging) return;
+            posX = e.clientX - startX;
+            posY = e.clientY - startY;
+            update();
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (dragging) {
+                dragging = false;
+                viewer.classList.remove('dragging');
             }
+        });
 
-            // Inicializar
-            setScale(1);
+        // Touch
+        let startDist = 0;
+        let startScaleTouch = 1;
 
-            // Evento del slider
-            slider.addEventListener('input', (e) => setScale(parseFloat(e.target.value)));
+        viewer.addEventListener('touchstart', e => {
+            if (e.touches.length === 1) {
+                dragging = true;
+                startX = e.touches[0].clientX - posX;
+                startY = e.touches[0].clientY - posY;
+            } else if (e.touches.length === 2) {
+                dragging = false;
+                startDist = Math.hypot(
+                    e.touches[1].clientX - e.touches[0].clientX,
+                    e.touches[1].clientY - e.touches[0].clientY
+                );
+                startScaleTouch = scale;
+            }
+        }, { passive: true });
 
-            // Botón restablecer: zoom 1x y scroll al inicio
-            document.getElementById('zoomReset').addEventListener('click', () => {
-                setScale(1);
-                wrapper.scrollLeft = 0;
-                wrapper.scrollTop = 0;
-            });
+        viewer.addEventListener('touchmove', e => {
+            e.preventDefault();
+            if (e.touches.length === 1 && dragging) {
+                posX = e.touches[0].clientX - startX;
+                posY = e.touches[0].clientY - startY;
+                update();
+            } else if (e.touches.length === 2) {
+                const dist = Math.hypot(
+                    e.touches[1].clientX - e.touches[0].clientX,
+                    e.touches[1].clientY - e.touches[0].clientY
+                );
+                setZoom(startScaleTouch * (dist / startDist));
+            }
+        }, { passive: false });
 
-            // Zoom con rueda + Ctrl
-            wrapper.addEventListener('wheel', (e) => {
-                if (e.ctrlKey || e.metaKey) {
-                    e.preventDefault();
-                    const delta = e.deltaY > 0 ? -0.1 : 0.1;
-                    setScale(scale + delta);
-                }
-            }, { passive: false });
+        viewer.addEventListener('touchend', e => {
+            if (e.touches.length === 0) {
+                dragging = false;
+            }
+        }, { passive: true });
 
-            // Gestos táctiles (pellizco)
-            let initialDistance = 0;
-            let initialScale = 1;
-
-            wrapper.addEventListener('touchstart', (e) => {
-                if (e.touches.length === 2) {
-                    e.preventDefault();
-                    const t1 = e.touches[0];
-                    const t2 = e.touches[1];
-                    initialDistance = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
-                    initialScale = scale;
-                } else if (e.touches.length === 1 && scale > 1) {
-                    // Preparar arrastre cuando hay zoom
-                    isDragging = true;
-                    startX = e.touches[0].clientX;
-                    startY = e.touches[0].clientY;
-                    scrollLeft = wrapper.scrollLeft;
-                    scrollTop = wrapper.scrollTop;
-                    wrapper.style.cursor = 'grabbing';
-                }
-            }, { passive: false });
-
-            wrapper.addEventListener('touchmove', (e) => {
-                if (e.touches.length === 2) {
-                    e.preventDefault();
-                    const t1 = e.touches[0];
-                    const t2 = e.touches[1];
-                    const currentDistance = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
-                    if (initialDistance > 0) {
-                        setScale(initialScale * (currentDistance / initialDistance));
-                    }
-                } else if (e.touches.length === 1 && isDragging) {
-                    e.preventDefault();
-                    const x = e.touches[0].clientX;
-                    const y = e.touches[0].clientY;
-                    wrapper.scrollLeft = scrollLeft - (x - startX) * 2;
-                    wrapper.scrollTop = scrollTop - (y - startY) * 2;
-                }
-            }, { passive: false });
-
-            wrapper.addEventListener('touchend', (e) => {
-                if (e.touches.length < 2) initialDistance = 0;
-                if (e.touches.length === 0) {
-                    isDragging = false;
-                    wrapper.style.cursor = 'grab';
-                }
-            });
-
-            // Doble clic para alternar zoom (1x -> 2x, 2x -> 1x)
-            wrapper.addEventListener('dblclick', (e) => {
-                e.preventDefault();
-                setScale(scale < 1.5 ? 2 : 1);
-            });
-
-            // Arrastre con ratón (solo si hay zoom > 1)
-            wrapper.addEventListener('mousedown', (e) => {
-                if (e.button !== 0) return;
-                if (scale > 1) {
-                    isDragging = true;
-                    startX = e.clientX;
-                    startY = e.clientY;
-                    scrollLeft = wrapper.scrollLeft;
-                    scrollTop = wrapper.scrollTop;
-                    wrapper.style.cursor = 'grabbing';
-                    e.preventDefault();
-                }
-            });
-
-            window.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                e.preventDefault();
-                wrapper.scrollLeft = scrollLeft - (e.clientX - startX) * 2;
-                wrapper.scrollTop = scrollTop - (e.clientY - startY) * 2;
-            });
-
-            window.addEventListener('mouseup', () => {
-                isDragging = false;
-                wrapper.style.cursor = 'grab';
-            });
-
-            // Evitar menú contextual en la imagen
-            image.addEventListener('contextmenu', (e) => e.preventDefault());
-        })();
+        // Doble clic
+        viewer.addEventListener('dblclick', () => setZoom(scale < 1.5 ? 2 : 1));
     </script>
 </body>
 </html>
